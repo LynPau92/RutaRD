@@ -1,0 +1,104 @@
+@page "/Restaurantes/{Id:int}"
+@using Frontend.Models
+@inject Frontend.Services.RestauranteService RestauranteService
+
+<PageTitle>@(restaurante?.Nombre ?? "Restaurante") - RutaRD</PageTitle>
+
+@if (restaurante == null)
+{
+    <div class="not-found">
+        <h2>Restaurante no encontrado</h2>
+        <a href="Restaurantes" class="btn-volver">← Volver a Restaurantes</a>
+    </div>
+}
+else
+{
+    <div class="detalle-page">
+        <!-- Hero -->
+        <div class="detalle-hero" style="background-image: url('@restaurante.Imagen')">
+            <div class="detalle-hero-overlay"></div>
+            <div class="detalle-hero-content">
+                <a href="Restaurantes" class="btn-volver">← Volver</a>
+                <h1>@restaurante.Nombre</h1>
+                <p>📍 @restaurante.Ubicacion</p>
+                <div class="detalle-estrellas">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="@(i <= restaurante.Estrellas ? "estrella activa" : "estrella")">★</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="detalle-container">
+            <!-- Info principal -->
+            <div class="detalle-info">
+                <div class="detalle-seccion">
+                    <h2>Sobre el Restaurante</h2>
+                    <p>@restaurante.Descripcion</p>
+                    <div class="dieta-tags">
+                        @if (restaurante.OpcionVegetariana)
+                        {
+                            <span class="dieta-tag vegetariano">🌿 Vegetariano</span>
+                        }
+                        @if (restaurante.OpcionVegana)
+                        {
+                            <span class="dieta-tag vegano">🌱 Vegano</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detalle-seccion">
+                    <h2>Información</h2>
+                    <p>💰 Rango de precios: <strong>@restaurante.RangoPrecios</strong></p>
+                    <p>📞 @restaurante.Telefono</p>
+                    <div class="detalle-actions">
+                        <a href="@restaurante.GoogleMapsUrl" target="_blank" class="btn-mapa">Ver en Mapa</a>
+                        <a href="@restaurante.SitioWeb" target="_blank" class="btn-sitio">Sitio Web</a>
+                    </div>
+                </div>
+
+                <!-- Reseñas -->
+                <div class="detalle-seccion">
+                    <h2>Reseñas de Visitantes</h2>
+                    @if (restaurante.Resenas.Any())
+                    {
+                        @foreach (var resena in restaurante.Resenas)
+                        {
+                            <div class="resena-card">
+                                <div class="resena-header">
+                                    <div class="resena-avatar">@resena.NombreVisitante[0]</div>
+                                    <div>
+                                        <p class="resena-nombre">@resena.NombreVisitante</p>
+                                        <p class="resena-fecha">@resena.Fecha</p>
+                                    </div>
+                                    <div class="resena-estrellas">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="@(i <= resena.Calificacion ? "estrella activa" : "estrella")">★</span>
+                                        }
+                                    </div>
+                                </div>
+                                <p class="resena-comentario">@resena.Comentario</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="sin-resenas">Aún no hay reseñas para este restaurante.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Restaurante? restaurante;
+
+    protected override void OnInitialized()
+    {
+        restaurante = RestauranteService.GetRestaurante(Id);
+    }
+}

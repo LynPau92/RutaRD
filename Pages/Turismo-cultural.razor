@@ -1,0 +1,61 @@
+@page "/Turismo-cultural"
+@using Frontend.Models
+@inject Frontend.Services.TurismoCulturalService TurismoCulturalService
+
+<PageTitle>Turismo Cultural - Puerto Plata</PageTitle>
+
+<div class="cultural-page">
+    <div class="cultural-header">
+        <h1>Turismo Cultural en Puerto Plata</h1>
+        <p>Historia, arte y tradición en la Novia del Atlántico</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros">
+        <button class="filtro-btn @(filtroActivo == "" ? "activo" : "")" @onclick='() => filtroActivo = ""'>Todos</button>
+        <button class="filtro-btn @(filtroActivo == "Museo" ? "activo" : "")" @onclick='() => filtroActivo = "Museo"'>🏛️ Museos</button>
+        <button class="filtro-btn @(filtroActivo == "Fortaleza" ? "activo" : "")" @onclick='() => filtroActivo = "Fortaleza"'>🏰 Fortalezas</button>
+        <button class="filtro-btn @(filtroActivo == "Iglesia" ? "activo" : "")" @onclick='() => filtroActivo = "Iglesia"'>⛪ Iglesias</button>
+        <button class="filtro-btn @(filtroActivo == "Monumento" ? "activo" : "")" @onclick='() => filtroActivo = "Monumento"'>🗿 Monumentos</button>
+        <button class="filtro-btn @(filtroActivo == "Centro Cultural" ? "activo" : "")" @onclick='() => filtroActivo = "Centro Cultural"'>🎭 Centros Culturales</button>
+    </div>
+
+    <div class="cultural-grid">
+        @foreach (var lugar in LugaresFiltrados)
+        {
+            <div class="cultural-card">
+                <div class="cultural-img-container">
+                    <img src="@lugar.Imagen" alt="@lugar.Nombre" class="cultural-img" />
+                    <span class="tipo-badge">@lugar.TipoLugar</span>
+                </div>
+                <div class="cultural-info">
+                    <h3 class="cultural-nombre">@lugar.Nombre</h3>
+                    <p class="cultural-ubicacion">📍 @lugar.Ubicacion</p>
+                    <p class="cultural-descripcion">@lugar.Descripcion</p>
+                    <div class="cultural-detalles">
+                        <span>🕐 @lugar.Horario</span>
+                        <span>💰 @lugar.PrecioEntrada</span>
+                    </div>
+                    <div class="cultural-actions">
+                        <a href="Turismo-cultural/@lugar.Id" class="btn-detalle">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<TurismoCultural> lugares = new();
+    private string filtroActivo = "";
+
+    private IEnumerable<TurismoCultural> LugaresFiltrados =>
+        string.IsNullOrEmpty(filtroActivo)
+            ? lugares
+            : lugares.Where(l => l.TipoLugar == filtroActivo);
+
+    protected override void OnInitialized()
+    {
+        lugares = TurismoCulturalService.GetLugares();
+    }
+}

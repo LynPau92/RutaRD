@@ -1,0 +1,104 @@
+@page "/Hoteles/{Id:int}"
+@using Frontend.Models
+@inject Frontend.Services.HotelService HotelService
+@inject NavigationManager Navigation
+
+<PageTitle>@(hotel?.Nombre ?? "Hotel") - RutaRD</PageTitle>
+
+@if (hotel == null)
+{
+    <div class="not-found">
+        <h2>Hotel no encontrado</h2>
+        <a href="Hoteles" class="btn-volver">← Volver a Hoteles</a>
+    </div>
+}
+else
+{
+    <div class="detalle-page">
+        <!-- Hero -->
+        <div class="detalle-hero" style="background-image: url('@hotel.Imagen')">
+            <div class="detalle-hero-overlay"></div>
+            <div class="detalle-hero-content">
+                <a href="Hoteles" class="btn-volver">← Volver</a>
+                <h1>@hotel.Nombre</h1>
+                <p>📍 @hotel.Ubicacion</p>
+                <div class="detalle-estrellas">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="@(i <= hotel.Estrellas ? "estrella activa" : "estrella")">★</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="detalle-container">
+            <!-- Info principal -->
+            <div class="detalle-info">
+                <div class="detalle-seccion">
+                    <h2>Sobre el Hotel</h2>
+                    <p>@hotel.Descripcion</p>
+                </div>
+
+                <div class="detalle-seccion">
+                    <h2>Servicios</h2>
+                    <div class="servicios-lista">
+                        @foreach (var servicio in hotel.Servicios)
+                        {
+                            <span class="servicio-tag">@servicio</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="detalle-seccion">
+                    <h2>Contacto</h2>
+                    <p>📞 @hotel.Telefono</p>
+                    <div class="detalle-actions">
+                        <a href="@hotel.GoogleMapsUrl" target="_blank" class="btn-mapa">Ver en Mapa</a>
+                        <a href="@hotel.SitioWeb" target="_blank" class="btn-sitio">Sitio Web</a>
+                    </div>
+                </div>
+
+                <!-- Reseñas -->
+                <div class="detalle-seccion">
+                    <h2>Reseñas de Visitantes</h2>
+                    @if (hotel.Resenas.Any())
+                    {
+                        @foreach (var resena in hotel.Resenas)
+                        {
+                            <div class="resena-card">
+                                <div class="resena-header">
+                                    <div class="resena-avatar">@resena.NombreVisitante[0]</div>
+                                    <div>
+                                        <p class="resena-nombre">@resena.NombreVisitante</p>
+                                        <p class="resena-fecha">@resena.Fecha</p>
+                                    </div>
+                                    <div class="resena-estrellas">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="@(i <= resena.Calificacion ? "estrella activa" : "estrella")">★</span>
+                                        }
+                                    </div>
+                                </div>
+                                <p class="resena-comentario">@resena.Comentario</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="sin-resenas">Aún no hay reseñas para este hotel.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Hotel? hotel;
+
+    protected override void OnInitialized()
+    {
+        hotel = HotelService.GetHotel(Id);
+    }
+}

@@ -1,0 +1,80 @@
+@page "/Configuracion"
+
+<PageTitle>Configuración - RutaRD</PageTitle>
+
+<div class="config-page">
+    <div class="config-header">
+        <h1>Configuración</h1>
+        <p>Personaliza tu experiencia en RutaRD</p>
+    </div>
+
+    <div class="config-container">
+
+        <!-- Preferencias -->
+        <div class="config-section">
+            <h2>🌐 Idioma</h2>
+            <div class="config-option">
+                <label>Idioma de la aplicación</label>
+                <select @bind="idiomaSeleccionado" class="config-select">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tema -->
+        <div class="config-section">
+            <h2>🎨 Apariencia</h2>
+            <div class="config-option">
+                <label>Tema</label>
+                <div class="tema-opciones">
+                    <button class="tema-btn @(temaActivo == "claro" ? "activo" : "")" @onclick='() => temaActivo = "claro"'>
+                        ☀️ Claro
+                    </button>
+                    <button class="tema-btn @(temaActivo == "oscuro" ? "activo" : "")" @onclick='() => temaActivo = "oscuro"'>
+                        🌙 Oscuro
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notificaciones -->
+        <div class="config-section">
+            <h2>🔔 Notificaciones</h2>
+            <div class="config-option toggle-option">
+                <label>Notificaciones de eventos</label>
+                <div class="toggle @(notificacionesEventos ? "activo" : "")" @onclick="() => notificacionesEventos = !notificacionesEventos">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+            <div class="config-option toggle-option">
+                <label>Notificaciones de ofertas</label>
+                <div class="toggle @(notificacionesOfertas ? "activo" : "")" @onclick="() => notificacionesOfertas = !notificacionesOfertas">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acerca de -->
+        <div class="config-section">
+            <h2>ℹ️ Acerca de RutaRD</h2>
+            <div class="acerca-info">
+                <p><strong>Versión:</strong> 1.0.0</p>
+                <p><strong>Desarrollado por:</strong> Facultad de Ingeniería y Tecnología, UNAD</p>
+                <p><strong>Contacto:</strong> info@rutard.com</p>
+                <div class="acerca-links">
+                    <a href="#">Términos de uso</a>
+                    <a href="#">Política de privacidad</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private string idiomaSeleccionado = "es";
+    private string temaActivo = "claro";
+    private bool notificacionesEventos = true;
+    private bool notificacionesOfertas = false;
+}

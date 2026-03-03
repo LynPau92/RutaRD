@@ -1,0 +1,139 @@
+@using System.Net.Http.Json
+@using System.Text.Json
+@inject HttpClient Http
+@inject IConfiguration Configuration
+
+<div class="chatbot-wrapper">
+    <!-- Botón flotante -->
+    <button class="chatbot-toggle" @onclick="ToggleChat">
+        @if (chatAbierto)
+        {
+            <span>✕</span>
+        }
+        else
+        {
+            <span>💬</span>
+        }
+    </button>
+
+    <!-- Ventana del chat -->
+    @if (chatAbierto)
+    {
+        <div class="chatbot-window">
+            <div class="chatbot-header">
+                <div class="chatbot-avatar">🌴</div>
+                <div>
+                    <p class="chatbot-nombre">RutaBot</p>
+                    <p class="chatbot-estado">Tu guía virtual de Puerto Plata</p>
+                </div>
+            </div>
+
+            <div class="chatbot-mensajes" id="mensajes-container">
+                @foreach (var mensaje in mensajes)
+                {
+                    <div class="mensaje @(mensaje.EsUsuario ? "usuario" : "bot")">
+                        <p>@mensaje.Texto</p>
+                    </div>
+                }
+                @if (cargando)
+                {
+                    <div class="mensaje bot">
+                        <p class="typing">● ● ●</p>
+                    </div>
+                }
+            </div>
+
+            <div class="chatbot-input">
+                <input type="text"
+                       placeholder="Pregunta sobre Puerto Plata..."
+                       @bind="mensajeActual"
+                       @onkeypress="HandleKeyPress" />
+                <button @onclick="EnviarMensaje" disabled="@cargando">➤</button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool chatAbierto = false;
+    private string mensajeActual = "";
+    private bool cargando = false;
+    private List<Mensaje> mensajes = new()
+    {
+        new Mensaje { Texto = "¡Hola! Soy RutaBot 🌴 Tu guía virtual de Puerto Plata. ¿En qué puedo ayudarte? Puedo recomendarte hoteles, restaurantes, playas, actividades y más.", EsUsuario = false }
+    };
+
+    private void ToggleChat() => chatAbierto = !chatAbierto;
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await EnviarMensaje();
+    }
+
+    private async Task EnviarMensaje()
+    {
+        if (string.IsNullOrWhiteSpace(mensajeActual) || cargando) return;
+
+        var texto = mensajeActual;
+        mensajeActual = "";
+        mensajes.Add(new Mensaje { Texto = texto, EsUsuario = true });
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var apiKey = Configuration["ClaudeApiKey"];
+            Http.DefaultRequestHeaders.Clear();
+            Http.DefaultRequestHeaders.Add("x-api-key", apiKey);
+            Http.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
+
+            var systemPrompt = @"Eres RutaBot, el asistente virtual de RutaRD, una app de turismo local de Puerto Plata, República Dominicana. 
+            Tu rol es ayudar a los turistas con recomendaciones personalizadas sobre:
+            
+            HOTELES: Casa Colonial Beach & Spa (5★, boutique, lujo), Iberostar Costa Dorada (4★, todo incluido), BlueBay Villas Doradas (4★, adults-only), Emotion by Hodelpa (4★, céntrico).
+            
+            RESTAURANTES: La Malecón Restaurant (mariscos, $$), El Paraíso Beach Bar (casual, playa, $, vegano), Aguaceros Restaurant (dominicana, $$$).
+            
+            PLAYAS: Playa Dorada, Playa Cabarete (kitesurf), Playa Sosúa (snorkel).
+            
+            ACTIVIDADES: Ocean World Adventure Park, Teleférico Pico Isabel de Torres, 27 Charcos de Damajagua, Sendero El Choco, Kitesurf en Cabarete.
+            
+            CULTURA: Fortaleza San Felipe, Museo del Ámbar, Catedral San Felipe, Parque Central.
+            
+            FESTIVALES: Carnaval (Feb-Mar), Festival del Merengue (Oct), Cabarete Race Week (Jun).
+            
+            Responde siempre en español, de forma amigable, concisa y entusiasta. Haz recomendaciones específicas basadas en las preferencias del usuario. Si preguntan sobre algo fuera de Puerto Plata, redirige amablemente la conversación hacia lo que ofrece Puerto Plata.";
+
+            var requestBody = new
+            {
+                model = "claude-sonnet-4-20250514",
+                max_tokens = 1000,
+                system = systemPrompt,
+                messages = mensajes
+                    .Where(m => m.EsUsuario || mensajes.IndexOf(m) > 0)
+                    .Select(m => new { role = m.EsUsuario ? "user" : "assistant", content = m.Texto })
+                    .ToList()
+            };
+
+            var response = await Http.PostAsJsonAsync("https://api.anthropic.com/v1/messages", requestBody);
+            var responseData = await response.Content.ReadFromJsonAsync<JsonElement>();
+            var respuesta = responseData.GetProperty("content")[0].GetProperty("text").GetString() ?? "Lo siento, no pude procesar tu mensaje.";
+            mensajes.Add(new Mensaje { Texto = respuesta, EsUsuario = false });
+        }
+        catch
+        {
+            mensajes.Add(new Mensaje { Texto = "Lo siento, hubo un problema. Por favor intenta de nuevo.", EsUsuario = false });
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private class Mensaje
+    {
+        public string Texto { get; set; } = "";
+        public bool EsUsuario { get; set; }
+    }
+}

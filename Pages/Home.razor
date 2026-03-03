@@ -1,0 +1,39 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+<PageTitle>RutaRD</PageTitle>
+
+<div class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">Descubre lo Nuestro</h1>
+        <p class="hero-subtitle">Explora. Vive. Repite.</p>
+        <a href="Hoteles" class="hero-btn">Explorar Hoteles</a>
+
+        <div class="hero-search">
+            <select class="search-category" @bind="selectedCategory">
+                <option value="">Categoría</option>
+                <option value="Restaurantes">Restaurantes</option>
+                <option value="Hoteles">Hoteles</option>
+                <option value="Eventos-actividades">Eventos y Actividades</option>
+                <option value="Turismo-cultural">Turismo Cultural</option>                
+                <option value="Turismo-ecologico">Turismo Ecológico</option>
+            </select>
+            <input class="search-input" type="text" placeholder="¿Qué estás buscando?" @bind="searchText" />
+            <button class="search-btn" @onclick="Search">Buscar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string searchText = "";
+    private string selectedCategory = "";
+
+    private void Search()
+    {
+        if (!string.IsNullOrEmpty(selectedCategory))
+        {
+            Navigation.NavigateTo($"/{selectedCategory}?q={searchText}");
+        }
+    }
+}

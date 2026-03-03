@@ -1,0 +1,254 @@
+.detalle-page {
+    min-height: 100vh;
+}
+
+.detalle-hero {
+    position: relative;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+}
+
+.detalle-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(9,66,85,0.2) 0%, rgba(9,35,15,0.8) 100%);
+}
+
+.detalle-hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+    color: white;
+    width: 100%;
+}
+
+.detalle-hero-content h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.detalle-hero-content p {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.btn-volver {
+    font-family: 'Baloo 2', cursive;
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+}
+
+.btn-volver:hover {
+    opacity: 1;
+    color: white;
+}
+
+.detalle-estrellas {
+    margin-top: 0.5rem;
+}
+
+.estrella {
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.estrella.activa {
+    color: #f5a623;
+}
+
+.detalle-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.detalle-seccion {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.detalle-seccion h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem;
+    color: #094255;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.detalle-seccion p {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 0.5rem;
+}
+
+.detalle-seccion strong {
+    color: #094255;
+}
+
+.dieta-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.dieta-tag {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.2rem 0.7rem;
+    border-radius: 50px;
+}
+
+.dieta-tag.vegetariano {
+    background: rgba(39, 174, 96, 0.12);
+    color: #27ae60;
+}
+
+.dieta-tag.vegano {
+    background: rgba(46, 204, 113, 0.12);
+    color: #1e8449;
+}
+
+.detalle-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.btn-mapa, .btn-sitio {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.btn-mapa {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+}
+
+.btn-sitio {
+    border: 2px solid #094255;
+    color: #094255;
+}
+
+.btn-mapa:hover, .btn-sitio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(9,66,85,0.3);
+    color: white;
+}
+
+.btn-sitio:hover {
+    background: #094255;
+}
+
+.resena-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.resena-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.resena-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.resena-nombre {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #094255;
+    margin: 0;
+}
+
+.resena-fecha {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.8rem;
+    color: #999;
+    margin: 0;
+}
+
+.resena-estrellas {
+    margin-left: auto;
+}
+
+.resena-estrellas .estrella {
+    font-size: 1rem;
+    color: #ddd;
+}
+
+.resena-estrellas .estrella.activa {
+    color: #f5a623;
+}
+
+.resena-comentario {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.sin-resenas {
+    font-family: 'Baloo 2', cursive;
+    color: #999;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .detalle-hero {
+        height: 300px;
+    }
+
+    .detalle-hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .detalle-container {
+        padding: 1rem;
+    }
+
+    .detalle-actions {
+        flex-direction: column;
+    }
+}

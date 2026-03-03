@@ -1,0 +1,86 @@
+@page "/Turismo-ecologico/{Id:int}"
+@using Frontend.Models
+@inject Frontend.Services.TurismoEcologicoService TurismoEcologicoService
+
+<PageTitle>@(lugar?.Nombre ?? "Lugar") - RutaRD</PageTitle>
+
+@if (lugar == null)
+{
+    <div class="not-found">
+        <h2>Lugar no encontrado</h2>
+        <a href="Turismo-ecologico" class="btn-volver">← Volver</a>
+    </div>
+}
+else
+{
+    <div class="detalle-page">
+        <div class="detalle-hero" style="background-image: url('@lugar.Imagen')">
+            <div class="detalle-hero-overlay"></div>
+            <div class="detalle-hero-content">
+                <a href="Turismo-ecologico" class="btn-volver">← Volver</a>
+                <h1>@lugar.Nombre</h1>
+                <p>📍 @lugar.Ubicacion</p>
+                <span class="dificultad-badge @lugar.NivelDificultad.ToLower()">@lugar.NivelDificultad</span>
+            </div>
+        </div>
+
+        <div class="detalle-container">
+            <div class="detalle-seccion">
+                <h2>Sobre el Lugar</h2>
+                <p>@lugar.Descripcion</p>
+            </div>
+
+            <div class="detalle-seccion">
+                <h2>Información</h2>
+                <p>🏷️ Tipo: <strong>@lugar.TipoLugar</strong></p>
+                <p>🏃 Actividades: <strong>@lugar.TipoActividad</strong></p>
+                <p>🕐 Horario: <strong>@lugar.Horario</strong></p>
+                <p>💰 Entrada: <strong>@lugar.PrecioEntrada</strong></p>
+                <div class="detalle-actions">
+                    <a href="@lugar.GoogleMapsUrl" target="_blank" class="btn-mapa">Ver en Mapa</a>
+                    <a href="@lugar.SitioWeb" target="_blank" class="btn-sitio">Sitio Web</a>
+                </div>
+            </div>
+
+            <div class="detalle-seccion">
+                <h2>Reseñas de Visitantes</h2>
+                @if (lugar.Resenas.Any())
+                {
+                    @foreach (var resena in lugar.Resenas)
+                    {
+                        <div class="resena-card">
+                            <div class="resena-header">
+                                <div class="resena-avatar">@resena.NombreVisitante[0]</div>
+                                <div>
+                                    <p class="resena-nombre">@resena.NombreVisitante</p>
+                                    <p class="resena-fecha">@resena.Fecha</p>
+                                </div>
+                                <div class="resena-estrellas">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span class="@(i <= resena.Calificacion ? "estrella activa" : "estrella")">★</span>
+                                    }
+                                </div>
+                            </div>
+                            <p class="resena-comentario">@resena.Comentario</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="sin-resenas">Aún no hay reseñas para este lugar.</p>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private TurismoEcologico? lugar;
+
+    protected override void OnInitialized()
+    {
+        lugar = TurismoEcologicoService.GetLugar(Id);
+    }
+}

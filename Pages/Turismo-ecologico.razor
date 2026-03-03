@@ -1,0 +1,62 @@
+@page "/Turismo-ecologico"
+@using Frontend.Models
+@inject Frontend.Services.TurismoEcologicoService TurismoEcologicoService
+
+<PageTitle>Turismo Ecológico - Puerto Plata</PageTitle>
+
+<div class="ecologico-page">
+    <div class="ecologico-header">
+        <h1>Turismo Ecológico en Puerto Plata</h1>
+        <p>Playas, montañas, ríos y senderos que te quitarán el aliento</p>
+    </div>
+
+    <!-- Filtro por tipo de lugar -->
+    <div class="filtros">
+        <button class="filtro-btn @(filtroActivo == "" ? "activo" : "")" @onclick='() => filtroActivo = ""'>Todos</button>
+        <button class="filtro-btn @(filtroActivo == "Playa" ? "activo" : "")" @onclick='() => filtroActivo = "Playa"'>🏖️ Playas</button>
+        <button class="filtro-btn @(filtroActivo == "Montaña" ? "activo" : "")" @onclick='() => filtroActivo = "Montaña"'>⛰️ Montañas</button>
+        <button class="filtro-btn @(filtroActivo == "Río" ? "activo" : "")" @onclick='() => filtroActivo = "Río"'>💧 Ríos</button>
+        <button class="filtro-btn @(filtroActivo == "Sendero" ? "activo" : "")" @onclick='() => filtroActivo = "Sendero"'>🌿 Senderos</button>
+    </div>
+
+    <div class="ecologico-grid">
+        @foreach (var lugar in LugaresFiltrados)
+        {
+            <div class="ecologico-card">
+                <div class="ecologico-img-container">
+                    <img src="@lugar.Imagen" alt="@lugar.Nombre" class="ecologico-img" />
+                    <span class="tipo-badge">@lugar.TipoLugar</span>
+                    <span class="dificultad-badge @lugar.NivelDificultad.ToLower()">@lugar.NivelDificultad</span>
+                </div>
+                <div class="ecologico-info">
+                    <h3 class="ecologico-nombre">@lugar.Nombre</h3>
+                    <p class="ecologico-ubicacion">📍 @lugar.Ubicacion</p>
+                    <p class="ecologico-descripcion">@lugar.Descripcion</p>
+                    <div class="ecologico-detalles">
+                        <span>🏃 @lugar.TipoActividad</span>
+                        <span>🕐 @lugar.Horario</span>
+                        <span>💰 @lugar.PrecioEntrada</span>
+                    </div>
+                    <div class="ecologico-actions">
+                        <a href="Turismo-ecologico/@lugar.Id" class="btn-detalle">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<TurismoEcologico> lugares = new();
+    private string filtroActivo = "";
+
+    private IEnumerable<TurismoEcologico> LugaresFiltrados =>
+        string.IsNullOrEmpty(filtroActivo)
+            ? lugares
+            : lugares.Where(l => l.TipoLugar == filtroActivo);
+
+    protected override void OnInitialized()
+    {
+        lugares = TurismoEcologicoService.GetLugares();
+    }
+}

@@ -1,0 +1,98 @@
+﻿@page "/Hoteles"
+@using Frontend.Models
+@inject Frontend.Services.HotelService HotelService
+
+<PageTitle>Hoteles - Puerto Plata</PageTitle>
+
+<div class="hoteles-page">
+    <div class="hoteles-header">
+        <h1>Hoteles en Puerto Plata</h1>
+        <p>Descubre los mejores hoteles de la Novia del Atlántico</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-container">
+        <!-- Estrellas -->
+        <div class="filtro-grupo">
+            <label>⭐ Estrellas</label>
+            <div class="filtro-opciones">
+                <button class="filtro-btn @(estrellasActivo == 0 ? "activo" : "")" @onclick="() => estrellasActivo = 0">Todas</button>
+                <button class="filtro-btn @(estrellasActivo == 3 ? "activo" : "")" @onclick="() => estrellasActivo = 3">3★</button>
+                <button class="filtro-btn @(estrellasActivo == 4 ? "activo" : "")" @onclick="() => estrellasActivo = 4">4★</button>
+                <button class="filtro-btn @(estrellasActivo == 5 ? "activo" : "")" @onclick="() => estrellasActivo = 5">5★</button>
+            </div>
+        </div>
+
+        <!-- Tipo -->
+        <div class="filtro-grupo">
+            <label>🏨 Tipo</label>
+            <div class="filtro-opciones">
+                <button class="filtro-btn @(tipoActivo == "" ? "activo" : "")" @onclick='() => tipoActivo = ""'>Todos</button>
+                <button class="filtro-btn @(tipoActivo == "Resort" ? "activo" : "")" @onclick='() => tipoActivo = "Resort"'>Resort</button>
+                <button class="filtro-btn @(tipoActivo == "Boutique" ? "activo" : "")" @onclick='() => tipoActivo = "Boutique"'>Boutique</button>
+                <button class="filtro-btn @(tipoActivo == "Todo Incluido" ? "activo" : "")" @onclick='() => tipoActivo = "Todo Incluido"'>Todo Incluido</button>
+            </div>
+        </div>
+
+        <!-- Servicios -->
+        <div class="filtro-grupo">
+            <label>🛎️ Servicios</label>
+            <div class="filtro-opciones">
+                <button class="filtro-btn @(servicioActivo == "" ? "activo" : "")" @onclick='() => servicioActivo = ""'>Todos</button>
+                <button class="filtro-btn @(servicioActivo == "Piscina" ? "activo" : "")" @onclick='() => servicioActivo = "Piscina"'>🏊 Piscina</button>
+                <button class="filtro-btn @(servicioActivo == "Spa" ? "activo" : "")" @onclick='() => servicioActivo = "Spa"'>💆 Spa</button>
+                <button class="filtro-btn @(servicioActivo == "Playa Privada" ? "activo" : "")" @onclick='() => servicioActivo = "Playa Privada"'>🏖️ Playa Privada</button>
+                <button class="filtro-btn @(servicioActivo == "Restaurante" ? "activo" : "")" @onclick='() => servicioActivo = "Restaurante"'>🍽️ Restaurante</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hoteles-grid">
+        @foreach (var hotel in HotelesFiltrados)
+        {
+            <div class="hotel-card">
+                <div class="hotel-img-container">
+                    <img src="@hotel.Imagen" alt="@hotel.Nombre" class="hotel-img" />
+                    <span class="tipo-badge">@hotel.Tipo</span>
+                </div>
+                <div class="hotel-info">
+                    <h3 class="hotel-nombre">@hotel.Nombre</h3>
+                    <p class="hotel-ubicacion">📍 @hotel.Ubicacion</p>
+                    <p class="hotel-descripcion">@hotel.Descripcion</p>
+                    <div class="hotel-estrellas">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="@(i <= hotel.Estrellas ? "estrella activa" : "estrella")">★</span>
+                        }
+                    </div>
+                    <div class="hotel-servicios">
+                        @foreach (var servicio in hotel.Servicios)
+                        {
+                            <span class="servicio-tag">@servicio</span>
+                        }
+                    </div>
+                    <div class="hotel-actions">
+                        <a href="Hoteles/@hotel.Id" class="btn-detalle">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Hotel> hoteles = new();
+    private int estrellasActivo = 0;
+    private string tipoActivo = "";
+    private string servicioActivo = "";
+
+    private IEnumerable<Hotel> HotelesFiltrados => hoteles
+        .Where(h => estrellasActivo == 0 || h.Estrellas == estrellasActivo)
+        .Where(h => string.IsNullOrEmpty(tipoActivo) || h.Tipo == tipoActivo)
+        .Where(h => string.IsNullOrEmpty(servicioActivo) || h.Servicios.Contains(servicioActivo));
+
+    protected override void OnInitialized()
+    {
+        hoteles = HotelService.GetHoteles();
+    }
+}

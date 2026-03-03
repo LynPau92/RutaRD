@@ -1,0 +1,266 @@
+.restaurantes-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.restaurantes-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.restaurantes-header h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    color: #094255;
+    margin-bottom: 0.5rem;
+}
+
+.restaurantes-header p {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    color: #42abc3;
+}
+
+/* Filtros */
+.filtros-container {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.filtro-grupo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filtro-grupo label {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #094255;
+    min-width: 100px;
+}
+
+.filtro-opciones {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    border: 2px solid #094255;
+    background: white;
+    color: #094255;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filtro-btn:hover, .filtro-btn.activo {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    border-color: transparent;
+}
+
+/* Grid */
+.restaurantes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.restaurante-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: white;
+}
+
+.restaurante-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(9,66,85,0.2);
+}
+
+.restaurante-img-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.restaurante-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.restaurante-card:hover .restaurante-img {
+    transform: scale(1.05);
+}
+
+.precio-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+}
+
+.restaurante-info {
+    padding: 1.25rem;
+}
+
+.restaurante-nombre {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #094255;
+    margin-bottom: 0.4rem;
+}
+
+.restaurante-ubicacion {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.85rem;
+    color: #42abc3;
+    margin-bottom: 0.5rem;
+}
+
+.restaurante-descripcion {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.restaurante-estrellas {
+    margin-bottom: 0.75rem;
+}
+
+.estrella {
+    font-size: 1.2rem;
+    color: #ddd;
+}
+
+.estrella.activa {
+    color: #f5a623;
+}
+
+.dieta-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.dieta-tag {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.2rem 0.7rem;
+    border-radius: 50px;
+}
+
+.dieta-tag.vegetariano {
+    background: rgba(39, 174, 96, 0.12);
+    color: #27ae60;
+}
+
+.dieta-tag.vegano {
+    background: rgba(46, 204, 113, 0.12);
+    color: #1e8449;
+}
+
+.restaurante-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-mapa, .btn-sitio {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-mapa {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+}
+
+.btn-sitio {
+    border: 2px solid #094255;
+    color: #094255;
+}
+
+.btn-mapa:hover, .btn-sitio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(9,66,85,0.3);
+    color: white;
+}
+
+.btn-sitio:hover {
+    background: #094255;
+}
+
+@media (max-width: 768px) {
+    .restaurantes-page {
+        padding: 1rem;
+    }
+
+    .restaurantes-header h1 {
+        font-size: 2rem;
+    }
+
+    .filtro-grupo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .restaurantes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn-detalle {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;
+}
+
+.btn-detalle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(9,66,85,0.3);
+    color: white;
+}

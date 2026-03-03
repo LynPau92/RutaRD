@@ -1,0 +1,214 @@
+.eventos-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.eventos-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.eventos-header h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    color: #094255;
+    margin-bottom: 0.5rem;
+}
+
+.eventos-header p {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    color: #42abc3;
+}
+
+.filtros {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+}
+
+.filtro-btn {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    border: 2px solid #094255;
+    background: white;
+    color: #094255;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filtro-btn:hover, .filtro-btn.activo {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.eventos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.evento-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: white;
+}
+
+.evento-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(9,66,85,0.2);
+}
+
+.evento-img-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.evento-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.evento-card:hover .evento-img {
+    transform: scale(1.05);
+}
+
+.tipo-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    color: white;
+}
+
+.tipo-badge.actividad {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+}
+
+.tipo-badge.festival {
+    background: linear-gradient(135deg, #8e44ad 0%, #e91e8c 100%);
+}
+
+.evento-info {
+    padding: 1.25rem;
+}
+
+.evento-nombre {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #094255;
+    margin-bottom: 0.4rem;
+}
+
+.evento-ubicacion {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.85rem;
+    color: #42abc3;
+    margin-bottom: 0.5rem;
+}
+
+.evento-descripcion {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.evento-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.85rem;
+    color: #094255;
+}
+
+.evento-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-mapa, .btn-sitio {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-mapa {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+}
+
+.btn-sitio {
+    border: 2px solid #094255;
+    color: #094255;
+}
+
+.btn-mapa:hover, .btn-sitio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(9,66,85,0.3);
+    color: white;
+}
+
+.btn-sitio:hover {
+    background: #094255;
+}
+
+@media (max-width: 768px) {
+    .eventos-page {
+        padding: 1rem;
+    }
+
+    .eventos-header h1 {
+        font-size: 2rem;
+    }
+
+    .eventos-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn-detalle {
+    font-family: 'Baloo 2', cursive;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;
+}
+
+.btn-detalle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(9,66,85,0.3);
+    color: white;
+}

@@ -1,0 +1,107 @@
+﻿@page "/Restaurantes"
+@using Frontend.Models
+@inject Frontend.Services.RestauranteService RestauranteService
+
+<PageTitle>Restaurantes - Puerto Plata</PageTitle>
+
+<div class="restaurantes-page">
+    <div class="restaurantes-header">
+        <h1>Restaurantes en Puerto Plata</h1>
+        <p>Los mejores sabores de la Novia del Atlántico</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-container">
+        <div class="filtro-grupo">
+            <label>💰 Precio</label>
+            <div class="filtro-opciones">
+                <button class="filtro-btn @(precioActivo == "" ? "activo" : "")" @onclick='() => precioActivo = ""'>Todos</button>
+                <button class="filtro-btn @(precioActivo == "$" ? "activo" : "")" @onclick='() => precioActivo = "$"'>$ Económico</button>
+                <button class="filtro-btn @(precioActivo == "$$" ? "activo" : "")" @onclick='() => precioActivo = "$$"'>$$ Moderado</button>
+                <button class="filtro-btn @(precioActivo == "$$$" ? "activo" : "")" @onclick='() => precioActivo = "$$$"'>$$$ Lujo</button>
+            </div>
+        </div>
+
+        <div class="filtro-grupo">
+            <label>🥗 Dieta</label>
+            <div class="filtro-opciones">
+                <button class="filtro-btn @(!soloVegetariano && !soloVegano ? "activo" : "")" @onclick="LimpiarDieta">Todos</button>
+                <button class="filtro-btn @(soloVegetariano ? "activo" : "")" @onclick="ToggleVegetariano">🌿 Vegetariano</button>
+                <button class="filtro-btn @(soloVegano ? "activo" : "")" @onclick="ToggleVegano">🌱 Vegano</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="restaurantes-grid">
+        @foreach (var restaurante in RestaurantesFiltrados)
+        {
+            <div class="restaurante-card">
+                <div class="restaurante-img-container">
+                    <img src="@restaurante.Imagen" alt="@restaurante.Nombre" class="restaurante-img" />
+                    <span class="precio-badge">@restaurante.RangoPrecios</span>
+                </div>
+                <div class="restaurante-info">
+                    <h3 class="restaurante-nombre">@restaurante.Nombre</h3>
+                    <p class="restaurante-ubicacion">📍 @restaurante.Ubicacion</p>
+                    <p class="restaurante-descripcion">@restaurante.Descripcion</p>
+                    <div class="restaurante-estrellas">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="@(i <= restaurante.Estrellas ? "estrella activa" : "estrella")">★</span>
+                        }
+                    </div>
+                    <div class="dieta-tags">
+                        @if (restaurante.OpcionVegetariana)
+                        {
+                            <span class="dieta-tag vegetariano">🌿 Vegetariano</span>
+                        }
+                        @if (restaurante.OpcionVegana)
+                        {
+                            <span class="dieta-tag vegano">🌱 Vegano</span>
+                        }
+                    </div>
+                    <div class="restaurante-actions">
+                        <a href="Restaurantes/@restaurante.Id" class="btn-detalle">Ver más</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Restaurante> restaurantes = new();
+    private string precioActivo = "";
+    private bool soloVegetariano = false;
+    private bool soloVegano = false;
+
+    private IEnumerable<Restaurante> RestaurantesFiltrados => restaurantes
+        .Where(r => string.IsNullOrEmpty(precioActivo) || r.RangoPrecios == precioActivo)
+        .Where(r => !soloVegetariano || r.OpcionVegetariana)
+        .Where(r => !soloVegano || r.OpcionVegana);
+
+    protected override void OnInitialized()
+    {
+        restaurantes = RestauranteService.GetRestaurantes();
+    }
+
+    private void ToggleVegetariano()
+    {
+        soloVegetariano = !soloVegetariano;
+        soloVegano = false;
+    }
+
+    private void ToggleVegano()
+    {
+        soloVegano = !soloVegano;
+        soloVegetariano = false;
+    }
+
+    private void LimpiarDieta()
+    {
+        soloVegetariano = false;
+        soloVegano = false;
+    }
+}
+
+

@@ -1,0 +1,43 @@
+﻿<div class="navbar-wrapper">
+    <!-- Barra superior -->
+    <div class="navbar-top-bar">
+        <div class="navbar-top-container">
+            <span>Puerto Plata, República Dominicana</span>
+            <span>info@rutard.com</span>
+        </div>
+    </div>
+
+    <!-- Barra principal -->
+    <div class="navbar-main">
+        <div class="navbar-container">
+            <a class="navbar-logo" href="">
+                <img src="images/RutaRD.png" alt="RutaRD logo" width="42" height="42" />
+                <span>RutaRD</span>
+            </a>
+
+            <!-- Botón hamburguesa -->
+            <button class="hamburger @(menuAbierto ? "activo" : "")" @onclick="ToggleMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="navbar-links @(menuAbierto ? "abierto" : "")">
+                <NavLink href="" Match="NavLinkMatch.All" @onclick="CerrarMenu">Inicio</NavLink>
+                <NavLink href="Restaurantes" @onclick="CerrarMenu">Restaurantes</NavLink>
+                <NavLink href="Hoteles" @onclick="CerrarMenu">Hoteles</NavLink>
+                <NavLink href="Eventos-actividades" @onclick="CerrarMenu">Eventos y Actividades</NavLink>
+                <NavLink href="Turismo-cultural" @onclick="CerrarMenu">Turismo Cultural</NavLink>
+                <NavLink href="Turismo-ecologico" @onclick="CerrarMenu">Turismo Ecológico</NavLink>
+                <NavLink href="Configuracion" @onclick="CerrarMenu">Configuración</NavLink>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool menuAbierto = false;
+
+    private void ToggleMenu() => menuAbierto = !menuAbierto;
+    private void CerrarMenu() => menuAbierto = false;
+}
