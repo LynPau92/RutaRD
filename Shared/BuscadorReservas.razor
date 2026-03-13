@@ -1,0 +1,134 @@
+@using Frontend.Models
+@inject Frontend.Services.HotelService HotelService
+@inject NavigationManager Navigation
+
+<div class="buscador-reservas">
+    <div class="buscador-grid">
+
+        <!-- Hotel -->
+        <div class="buscador-campo">
+            <label>Hotel</label>
+            <select @bind="hotelSeleccionado">
+                <option value="0">Selecciona un hotel</option>
+                @foreach (var hotel in hoteles)
+                {
+                    <option value="@hotel.Id">@hotel.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <!-- Check-in -->
+        <div class="buscador-campo">
+            <label>Check-in</label>
+            <input type="date" @bind="fechaEntrada" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <!-- Check-out -->
+        <div class="buscador-campo">
+            <label>Check-out</label>
+            <input type="date" @bind="fechaSalida" min="@fechaEntrada.AddDays(1).ToString("yyyy-MM-dd")" />
+        </div>
+
+        <!-- Personas desplegable -->
+        <div class="buscador-campo personas-campo">
+            <label>Personas</label>
+            <div class="personas-trigger @(personasAbierto ? "activo" : "")" @onclick="TogglePersonas">
+                <span>@adultos adulto@(adultos > 1 ? "s" : "") · @ninos niño@(ninos != 1 ? "s" : "") · @habitaciones hab.</span>
+                <span class="chevron">▾</span>
+            </div>
+            @if (personasAbierto)
+            {
+                <div class="personas-dropdown">
+                    <div class="persona-control">
+                        <div>
+                            <p class="persona-label">Adultos</p>
+                            <p class="persona-sublabel">Edad 18+</p>
+                        </div>
+                        <div class="contador">
+                            <button @onclick="() => adultos = Math.Max(1, adultos - 1)" @onclick:stopPropagation>−</button>
+                            <span>@adultos</span>
+                            <button @onclick="() => adultos++" @onclick:stopPropagation>+</button>
+                        </div>
+                    </div>
+                    <div class="persona-control">
+                        <div>
+                            <p class="persona-label">Niños</p>
+                            <p class="persona-sublabel">Edad 0-17</p>
+                        </div>
+                        <div class="contador">
+                            <button @onclick="() => ninos = Math.Max(0, ninos - 1)" @onclick:stopPropagation>−</button>
+                            <span>@ninos</span>
+                            <button @onclick="() => ninos++" @onclick:stopPropagation>+</button>
+                        </div>
+                    </div>
+                    <div class="persona-control">
+                        <div>
+                            <p class="persona-label">Habitaciones</p>
+                        </div>
+                        <div class="contador">
+                            <button @onclick="() => habitaciones = Math.Max(1, habitaciones - 1)" @onclick:stopPropagation>−</button>
+                            <span>@habitaciones</span>
+                            <button @onclick="() => habitaciones++" @onclick:stopPropagation>+</button>
+                        </div>
+                    </div>
+                    <button class="btn-listo" @onclick="TogglePersonas">Listo</button>
+                </div>
+            }
+        </div>
+
+        <!-- Botón -->
+        <div class="buscador-campo buscador-btn-container">
+            @if (!string.IsNullOrEmpty(errorMsg))
+            {
+                <span class="buscador-error">@errorMsg</span>
+            }
+            <button class="btn-buscar" @onclick="Reservar">Reservar</button>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private List<Hotel> hoteles = new();
+    private int hotelSeleccionado = 0;
+    private DateTime fechaEntrada = DateTime.Today.AddDays(1);
+    private DateTime fechaSalida = DateTime.Today.AddDays(2);
+    private int adultos = 2;
+    private int ninos = 0;
+    private int habitaciones = 1;
+    private bool personasAbierto = false;
+    private string errorMsg = "";
+
+    protected override void OnInitialized()
+    {
+        hoteles = HotelService.GetHoteles();
+    }
+
+    private void TogglePersonas() => personasAbierto = !personasAbierto;
+
+    private void Reservar()
+    {
+        errorMsg = "";
+
+        if (hotelSeleccionado == 0)
+        {
+            errorMsg = "Por favor selecciona un hotel.";
+            return;
+        }
+
+        if (fechaSalida <= fechaEntrada)
+        {
+            errorMsg = "La fecha de salida debe ser posterior al check-in.";
+            return;
+        }
+
+        var url = $"/Reservar?HotelId={hotelSeleccionado}" +
+                  $"&FechaEntrada={fechaEntrada:yyyy-MM-dd}" +
+                  $"&FechaSalida={fechaSalida:yyyy-MM-dd}" +
+                  $"&Adultos={adultos}" +
+                  $"&Ninos={ninos}" +
+                  $"&Habitaciones={habitaciones}";
+
+        Navigation.NavigateTo(url);
+    }
+}

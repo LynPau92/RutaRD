@@ -13,11 +13,11 @@
     <!-- Filtros -->
     <div class="filtros">
         <button class="filtro-btn @(filtroActivo == "" ? "activo" : "")" @onclick='() => filtroActivo = ""'>Todos</button>
-        <button class="filtro-btn @(filtroActivo == "Museo" ? "activo" : "")" @onclick='() => filtroActivo = "Museo"'>🏛️ Museos</button>
-        <button class="filtro-btn @(filtroActivo == "Fortaleza" ? "activo" : "")" @onclick='() => filtroActivo = "Fortaleza"'>🏰 Fortalezas</button>
-        <button class="filtro-btn @(filtroActivo == "Iglesia" ? "activo" : "")" @onclick='() => filtroActivo = "Iglesia"'>⛪ Iglesias</button>
-        <button class="filtro-btn @(filtroActivo == "Monumento" ? "activo" : "")" @onclick='() => filtroActivo = "Monumento"'>🗿 Monumentos</button>
-        <button class="filtro-btn @(filtroActivo == "Centro Cultural" ? "activo" : "")" @onclick='() => filtroActivo = "Centro Cultural"'>🎭 Centros Culturales</button>
+        <button class="filtro-btn @(filtroActivo == "Museo" ? "activo" : "")" @onclick='() => filtroActivo = "Museo"'>Museos</button>
+        <button class="filtro-btn @(filtroActivo == "Fortaleza" ? "activo" : "")" @onclick='() => filtroActivo = "Fortaleza"'>Fortalezas</button>
+        <button class="filtro-btn @(filtroActivo == "Iglesia" ? "activo" : "")" @onclick='() => filtroActivo = "Iglesia"'>Iglesias</button>
+        <button class="filtro-btn @(filtroActivo == "Monumento" ? "activo" : "")" @onclick='() => filtroActivo = "Monumento"'>Monumentos</button>
+        <button class="filtro-btn @(filtroActivo == "Centro Cultural" ? "activo" : "")" @onclick='() => filtroActivo = "Centro Cultural"'>Centros Culturales</button>
     </div>
 
     <div class="cultural-grid">
@@ -30,11 +30,11 @@
                 </div>
                 <div class="cultural-info">
                     <h3 class="cultural-nombre">@lugar.Nombre</h3>
-                    <p class="cultural-ubicacion">📍 @lugar.Ubicacion</p>
+                    <p class="cultural-ubicacion">@lugar.Ubicacion</p>
                     <p class="cultural-descripcion">@lugar.Descripcion</p>
                     <div class="cultural-detalles">
-                        <span>🕐 @lugar.Horario</span>
-                        <span>💰 @lugar.PrecioEntrada</span>
+                        <span>@lugar.Horario</span>
+                        <span>@lugar.PrecioEntrada</span>
                     </div>
                     <div class="cultural-actions">
                         <a href="Turismo-cultural/@lugar.Id" class="btn-detalle">Ver más</a>

@@ -1,5 +1,8 @@
 ﻿@page "/"
+@using Frontend.Shared
+@using Frontend.Models
 @inject NavigationManager Navigation
+@inject Frontend.Services.HotelService HotelService
 
 <PageTitle>RutaRD</PageTitle>
 
@@ -7,33 +10,147 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1 class="hero-title">Descubre lo Nuestro</h1>
-        <p class="hero-subtitle">Explora. Vive. Repite.</p>
-        <a href="Hoteles" class="hero-btn">Explorar Hoteles</a>
+        <p class="hero-subtitle">EXPLORA. VIVE. REPITE.</p>
 
-        <div class="hero-search">
-            <select class="search-category" @bind="selectedCategory">
-                <option value="">Categoría</option>
-                <option value="Restaurantes">Restaurantes</option>
-                <option value="Hoteles">Hoteles</option>
-                <option value="Eventos-actividades">Eventos y Actividades</option>
-                <option value="Turismo-cultural">Turismo Cultural</option>                
-                <option value="Turismo-ecologico">Turismo Ecológico</option>
-            </select>
-            <input class="search-input" type="text" placeholder="¿Qué estás buscando?" @bind="searchText" />
-            <button class="search-btn" @onclick="Search">Buscar</button>
+        <div class="home-buscador">
+            <!-- Selector de categoría -->
+            <div class="buscador-campo">
+                <label>¿Qué buscas?</label>
+                <select @bind="categoriaSeleccionada">
+                    <option value="">Selecciona una categoría</option>
+                    <option value="Hoteles">Hoteles</option>
+                    <option value="Restaurantes">Restaurantes</option>
+                    <option value="Eventos-actividades">Eventos y Actividades</option>
+                    <option value="Turismo-cultural">Turismo Cultural</option>
+                    <option value="Turismo-ecologico">Turismo Ecológico</option>
+                </select>
+            </div>
+
+            @if (categoriaSeleccionada == "Hoteles")
+            {
+                <div class="buscador-campo">
+                    <label>Hotel</label>
+                    <select @bind="hotelSeleccionado">
+                        <option value="0">Selecciona un hotel</option>
+                        @foreach (var hotel in hoteles)
+                        {
+                            <option value="@hotel.Id">@hotel.Nombre</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="buscador-campo">
+                    <label>Check-in</label>
+                    <input type="date" @bind="fechaEntrada" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="buscador-campo">
+                    <label>Check-out</label>
+                    <input type="date" @bind="fechaSalida" min="@fechaEntrada.AddDays(1).ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="buscador-campo">
+                    <label>Personas</label>
+                    <div class="personas-grupo">
+                        <div class="persona-control">
+                            <span>Adultos</span>
+                            <div class="contador">
+                                <button @onclick="() => adultos = Math.Max(1, adultos - 1)">−</button>
+                                <span>@adultos</span>
+                                <button @onclick="() => adultos++">+</button>
+                            </div>
+                        </div>
+                        <div class="persona-control">
+                            <span>Niños</span>
+                            <div class="contador">
+                                <button @onclick="() => ninos = Math.Max(0, ninos - 1)">−</button>
+                                <span>@ninos</span>
+                                <button @onclick="() => ninos++">+</button>
+                            </div>
+                        </div>
+                        <div class="persona-control">
+                            <span>Habitaciones</span>
+                            <div class="contador">
+                                <button @onclick="() => habitaciones = Math.Max(1, habitaciones - 1)">−</button>
+                                <span>@habitaciones</span>
+                                <button @onclick="() => habitaciones++">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="buscador-campo buscador-texto">
+                    <label>¿Qué estás buscando?</label>
+                    <input type="text" placeholder="Ej: playa, museo, senderismo..." @bind="searchText" />
+                </div>
+            }
+
+            <div class="buscador-campo buscador-btn-container">
+                @if (!string.IsNullOrEmpty(errorMsg))
+                {
+                    <span class="buscador-error">@errorMsg</span>
+                }
+                <button class="btn-buscar" @onclick="Buscar">
+                    @(categoriaSeleccionada == "Hoteles" ? "Reservar" : "Buscar")
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 @code {
+    private List<Hotel> hoteles = new();
+    private string categoriaSeleccionada = "";
     private string searchText = "";
-    private string selectedCategory = "";
+    private int hotelSeleccionado = 0;
+    private DateTime fechaEntrada = DateTime.Today.AddDays(1);
+    private DateTime fechaSalida = DateTime.Today.AddDays(2);
+    private int adultos = 2;
+    private int ninos = 0;
+    private int habitaciones = 1;
+    private string errorMsg = "";
 
-    private void Search()
+    protected override void OnInitialized()
     {
-        if (!string.IsNullOrEmpty(selectedCategory))
+        hoteles = HotelService.GetHoteles();
+    }
+
+    private void Buscar()
+    {
+        errorMsg = "";
+
+        if (string.IsNullOrEmpty(categoriaSeleccionada))
         {
-            Navigation.NavigateTo($"/{selectedCategory}?q={searchText}");
+            errorMsg = "Por favor selecciona una categoría.";
+            return;
+        }
+
+        if (categoriaSeleccionada == "Hoteles")
+        {
+            if (hotelSeleccionado == 0)
+            {
+                errorMsg = "Por favor selecciona un hotel.";
+                return;
+            }
+            if (fechaSalida <= fechaEntrada)
+            {
+                errorMsg = "La fecha de salida debe ser posterior al check-in.";
+                return;
+            }
+
+            var url = $"/Reservar?HotelId={hotelSeleccionado}" +
+                      $"&FechaEntrada={fechaEntrada:yyyy-MM-dd}" +
+                      $"&FechaSalida={fechaSalida:yyyy-MM-dd}" +
+                      $"&Adultos={adultos}" +
+                      $"&Ninos={ninos}" +
+                      $"&Habitaciones={habitaciones}";
+            Navigation.NavigateTo(url);
+        }
+        else
+        {
+            Navigation.NavigateTo($"/{categoriaSeleccionada}?q={searchText}");
         }
     }
 }

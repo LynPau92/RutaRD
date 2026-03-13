@@ -13,8 +13,8 @@
     <!-- Filtros -->
     <div class="filtros">
         <button class="filtro-btn @(filtroActivo == "" ? "activo" : "")" @onclick='() => filtroActivo = ""'>Todos</button>
-        <button class="filtro-btn @(filtroActivo == "Actividad" ? "activo" : "")" @onclick='() => filtroActivo = "Actividad"'>🎯 Actividades</button>
-        <button class="filtro-btn @(filtroActivo == "Festival" ? "activo" : "")" @onclick='() => filtroActivo = "Festival"'>🎉 Festivales</button>
+        <button class="filtro-btn @(filtroActivo == "Actividad" ? "activo" : "")" @onclick='() => filtroActivo = "Actividad"'>Actividades</button>
+        <button class="filtro-btn @(filtroActivo == "Festival" ? "activo" : "")" @onclick='() => filtroActivo = "Festival"'>Festivales</button>
     </div>
 
     <div class="eventos-grid">
@@ -27,12 +27,12 @@
                 </div>
                 <div class="evento-info">
                     <h3 class="evento-nombre">@evento.Nombre</h3>
-                    <p class="evento-ubicacion">📍 @evento.Ubicacion</p>
+                    <p class="evento-ubicacion">@evento.Ubicacion</p>
                     <p class="evento-descripcion">@evento.Descripcion</p>
                     <div class="evento-detalles">
-                        <span>📅 @evento.Fecha</span>
-                        <span>🕐 @evento.Horario</span>
-                        <span>💰 @evento.PrecioEntrada</span>
+                        <span>@evento.Fecha</span>
+                        <span>@evento.Horario</span>
+                        <span>@evento.PrecioEntrada</span>
                     </div>
                     <div class="evento-actions">
                         <a href="Eventos-actividades/@evento.Id" class="btn-detalle">Ver más</a>

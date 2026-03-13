@@ -11,6 +11,7 @@ namespace Frontend.Models
         public string Ubicacion { get; set; } = "";
         public string GoogleMapsUrl { get; set; } = "";
         public double Estrellas { get; set; }
+        public decimal PrecioNoche { get; set; }
         public string Telefono { get; set; } = "";
         public string SitioWeb { get; set; } = "";
         public string Tipo { get; set; } = "";

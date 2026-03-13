@@ -13,10 +13,12 @@
     <!-- Filtro por tipo de lugar -->
     <div class="filtros">
         <button class="filtro-btn @(filtroActivo == "" ? "activo" : "")" @onclick='() => filtroActivo = ""'>Todos</button>
-        <button class="filtro-btn @(filtroActivo == "Playa" ? "activo" : "")" @onclick='() => filtroActivo = "Playa"'>🏖️ Playas</button>
-        <button class="filtro-btn @(filtroActivo == "Montaña" ? "activo" : "")" @onclick='() => filtroActivo = "Montaña"'>⛰️ Montañas</button>
-        <button class="filtro-btn @(filtroActivo == "Río" ? "activo" : "")" @onclick='() => filtroActivo = "Río"'>💧 Ríos</button>
-        <button class="filtro-btn @(filtroActivo == "Sendero" ? "activo" : "")" @onclick='() => filtroActivo = "Sendero"'>🌿 Senderos</button>
+        <button class="filtro-btn @(filtroActivo == "Playa" ? "activo" : "")" @onclick='() => filtroActivo = "Playa"'>Playas</button>
+        <button class="filtro-btn @(filtroActivo == "Montaña" ? "activo" : "")" @onclick='() => filtroActivo = "Montaña"'>Montañas</button>
+        <button class="filtro-btn @(filtroActivo == "Río" ? "activo" : "")" @onclick='() => filtroActivo = "Río"'>Ríos</button>
+        <button class="filtro-btn @(filtroActivo == "Sendero" ? "activo" : "")" @onclick='() => filtroActivo = "Sendero"'>Senderos</button>
+        <button class="filtro-btn @(filtroActivo == "Cueva" ? "activo" : "")" @onclick='() => filtroActivo = "Cueva"'>Cuevas</button>
+        
     </div>
 
     <div class="ecologico-grid">
@@ -30,12 +32,12 @@
                 </div>
                 <div class="ecologico-info">
                     <h3 class="ecologico-nombre">@lugar.Nombre</h3>
-                    <p class="ecologico-ubicacion">📍 @lugar.Ubicacion</p>
+                    <p class="ecologico-ubicacion">@lugar.Ubicacion</p>
                     <p class="ecologico-descripcion">@lugar.Descripcion</p>
                     <div class="ecologico-detalles">
-                        <span>🏃 @lugar.TipoActividad</span>
-                        <span>🕐 @lugar.Horario</span>
-                        <span>💰 @lugar.PrecioEntrada</span>
+                        <span>@lugar.TipoActividad</span>
+                        <span>@lugar.Horario</span>
+                        <span>@lugar.PrecioEntrada</span>
                     </div>
                     <div class="ecologico-actions">
                         <a href="Turismo-ecologico/@lugar.Id" class="btn-detalle">Ver más</a>

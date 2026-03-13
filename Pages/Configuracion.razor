@@ -12,7 +12,7 @@
 
         <!-- Preferencias -->
         <div class="config-section">
-            <h2>🌐 Idioma</h2>
+            <h2>Idioma</h2>
             <div class="config-option">
                 <label>Idioma de la aplicación</label>
                 <select @bind="idiomaSeleccionado" class="config-select">
@@ -24,15 +24,15 @@
 
         <!-- Tema -->
         <div class="config-section">
-            <h2>🎨 Apariencia</h2>
+            <h2>Apariencia</h2>
             <div class="config-option">
                 <label>Tema</label>
                 <div class="tema-opciones">
                     <button class="tema-btn @(temaActivo == "claro" ? "activo" : "")" @onclick='() => temaActivo = "claro"'>
-                        ☀️ Claro
+                        Claro
                     </button>
                     <button class="tema-btn @(temaActivo == "oscuro" ? "activo" : "")" @onclick='() => temaActivo = "oscuro"'>
-                        🌙 Oscuro
+                        Oscuro
                     </button>
                 </div>
             </div>
@@ -40,7 +40,7 @@
 
         <!-- Notificaciones -->
         <div class="config-section">
-            <h2>🔔 Notificaciones</h2>
+            <h2>Notificaciones</h2>
             <div class="config-option toggle-option">
                 <label>Notificaciones de eventos</label>
                 <div class="toggle @(notificacionesEventos ? "activo" : "")" @onclick="() => notificacionesEventos = !notificacionesEventos">
@@ -57,7 +57,7 @@
 
         <!-- Acerca de -->
         <div class="config-section">
-            <h2>ℹ️ Acerca de RutaRD</h2>
+            <h2>Acerca de RutaRD</h2>
             <div class="acerca-info">
                 <p><strong>Versión:</strong> 1.0.0</p>
                 <p><strong>Desarrollado por:</strong> Facultad de Ingeniería y Tecnología, UNAD</p>

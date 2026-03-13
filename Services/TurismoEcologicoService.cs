@@ -53,7 +53,7 @@ namespace Frontend.Services
                     Id = 3,
                     Nombre = "27 Charcos de Damajagua",
                     Descripcion = "Sistema de cascadas naturales y pozas de agua turquesa únicas en el mundo.",
-                    Imagen = "images/ecologico/damajagua.jpg",
+                    Imagen = "images/ecologico/damajagua.jpeg",
                     Ubicacion = "Imbert, Puerto Plata",
                     GoogleMapsUrl = "https://maps.google.com/?q=27+Charcos+Damajagua+Puerto+Plata",
                     SitioWeb = "#",
@@ -111,21 +111,21 @@ namespace Frontend.Services
                 new TurismoEcologico
                 {
                     Id = 6,
-                    Nombre = "Playa Sosúa",
-                    Descripcion = "Bahía protegida ideal para el snorkel con arrecifes de coral y aguas tranquilas.",
-                    Imagen = "images/ecologico/sosua.jpg",
+                    Nombre = "Parque Nacional Cueva de la Quebrada del Toro",
+                    Descripcion = "Sistema de cuevas con formaciones rocosas únicas, ríos subterráneos y fauna endémica.",
+                    Imagen = "images/ecologico/cueva-toro.jpeg",
                     Ubicacion = "Sosúa, Puerto Plata",
-                    GoogleMapsUrl = "https://maps.google.com/?q=Playa+Sosua+Puerto+Plata",
+                    GoogleMapsUrl = "https://maps.google.com/?q=Cueva+de+la+Quebrada+del+Toro+Sosua",
                     SitioWeb = "#",
-                    TipoLugar = "Playa",
-                    TipoActividad = "Snorkel, Buceo, Nado",
-                    NivelDificultad = "Fácil",
-                    PrecioEntrada = "Gratis",
-                    Horario = "Abierto todo el día",
+                    TipoLugar = "Cueva",
+                    TipoActividad = "Espeleología, Senderismo",
+                    NivelDificultad = "Difícil",
+                    PrecioEntrada = "RD$400",
+                    Horario = "8:00am - 3:00pm",    
                     Resenas = new List<Resena>
                     {
-                        new Resena { Id = 1, NombreVisitante = "Sandra Pérez", Comentario = "Los arrecifes de coral son espectaculares. El snorkel aquí es de otro nivel.", Calificacion = 5, Fecha = "Febrero 2026" },
-                        new Resena { Id = 2, NombreVisitante = "Miguel Ángel Reyes", Comentario = "Aguas tranquilas y cristalinas, perfectas para el buceo. La vida marina es increíble.", Calificacion = 5, Fecha = "Enero 2026" }
+                        new Resena { Id = 1, NombreVisitante = "María López", Comentario = "Una aventura subterránea fascinante. Las formaciones rocosas son impresionantes.", Calificacion = 5, Fecha = "Enero 2026" },
+                        new Resena { Id = 2, NombreVisitante = "Andrés Gómez", Comentario = "La cueva es un mundo aparte. Requiere esfuerzo llegar a algunas partes, pero vale la pena.", Calificacion = 4, Fecha = "Febrero 2026" }
                     }
                 }
             };

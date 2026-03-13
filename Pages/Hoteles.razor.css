@@ -256,3 +256,11 @@
     box-shadow: 0 4px 12px rgba(9,66,85,0.3);
     color: white;
 }
+
+.hotel-precio {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #094255;
+    margin-bottom: 0.75rem;
+}
