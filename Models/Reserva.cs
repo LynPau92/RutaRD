@@ -12,6 +12,6 @@ namespace Frontend.Models
         public decimal PrecioNoche { get; set; }
 
         public int Noches => (FechaSalida - FechaEntrada).Days;
-        public decimal TotalEstimado => Noches * PrecioNoche * Habitaciones;
+        public decimal TotalEstimado => Noches * PrecioNoche * Habitaciones * (Adultos + (Ninos * 0.60m));
     }
 }

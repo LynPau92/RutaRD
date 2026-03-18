@@ -32,6 +32,7 @@
                 <button class="filtro-btn @(tipoActivo == "Resort" ? "activo" : "")" @onclick='() => tipoActivo = "Resort"'>Resort</button>
                 <button class="filtro-btn @(tipoActivo == "Boutique" ? "activo" : "")" @onclick='() => tipoActivo = "Boutique"'>Boutique</button>
                 <button class="filtro-btn @(tipoActivo == "Todo Incluido" ? "activo" : "")" @onclick='() => tipoActivo = "Todo Incluido"'>Todo Incluido</button>
+            
             </div>
         </div>
 
@@ -46,6 +47,28 @@
                 <button class="filtro-btn @(servicioActivo == "Restaurante" ? "activo" : "")" @onclick='() => servicioActivo = "Restaurante"'>Restaurante</button>
             </div>
         </div>
+       
+        <!-- Precio -->
+        <div class="filtro-grupo">
+            <label class="filtro-label">Precio por noche</label>
+            <div class="precio-slider-container">
+                <div class="precio-valores">
+                    <span>RD$ @precioMin.ToString("N0")</span>
+                    <span>--------------- RD$ @precioMax.ToString("N0")</span>
+        </div>
+        <div class="slider-wrapper">
+            <input type="range" min="0" max="15000" step="500"
+                @bind="precioMin" @bind:event="oninput" class="slider slider-min" />
+            <input type="range" min="0" max="15000" step="500"
+                @bind="precioMax" @bind:event="oninput" class="slider slider-max" />
+        </div>
+        <div class="precio-etiquetas">
+            <span>RD$ 0</span>
+            <span>RD$ 15,000</span>
+        </div>
+    </div>
+</div>
+
     </div>
 
     <BuscadorReservas />
@@ -88,11 +111,14 @@
     private int estrellasActivo = 0;
     private string tipoActivo = "";
     private string servicioActivo = "";
+    private decimal precioMin = 0;
+    private decimal precioMax = 15000;
 
     private IEnumerable<Hotel> HotelesFiltrados => hoteles
         .Where(h => estrellasActivo == 0 || h.Estrellas == estrellasActivo)
         .Where(h => string.IsNullOrEmpty(tipoActivo) || h.Tipo == tipoActivo)
-        .Where(h => string.IsNullOrEmpty(servicioActivo) || h.Servicios.Contains(servicioActivo));
+        .Where(h => string.IsNullOrEmpty(servicioActivo) || h.Servicios.Contains(servicioActivo))
+        .Where(h => h.PrecioNoche >= precioMin && h.PrecioNoche <= precioMax);
 
     protected override void OnInitialized()
     {

@@ -238,3 +238,248 @@
         grid-template-columns: 1fr;
     }
 }
+
+/*  Resumen sub total */
+.resumen-fila.subtotal {
+    font-weight: 600;
+    color: #42abc3;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+
+/* Factura */
+.factura {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+    font-family: 'Baloo 2', cursive;
+}
+
+.factura-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.factura-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.factura-logo-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.factura-logo-texto {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #094255;
+}
+
+.factura-info {
+    text-align: right;
+}
+
+.factura-titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #094255;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.factura-numero {
+    font-size: 0.9rem;
+    color: #42abc3;
+    font-weight: 600;
+    margin: 0.25rem 0 0 0;
+}
+
+.factura-fecha {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+}
+
+.factura-divider {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 1rem 0;
+}
+
+.factura-dos-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.factura-dos-col p {
+    font-size: 0.88rem;
+    color: #444;
+    margin: 0.2rem 0;
+}
+
+.factura-seccion-titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #094255;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.factura-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+}
+
+.factura-tabla thead tr {
+    background: #094255;
+    color: white;
+}
+
+.factura-tabla th {
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.factura-tabla td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+}
+
+.factura-tabla tbody tr:nth-child(even) {
+    background: #f8fbfc;
+}
+
+.factura-totales {
+    max-width: 320px;
+    margin-left: auto;
+}
+
+.factura-total-fila {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #555;
+    padding: 0.3rem 0;
+}
+
+.factura-total-fila.gran-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #094255;
+    padding-top: 0.75rem;
+}
+
+.factura-pie {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #888;
+    margin: 0.3rem 0;
+}
+
+/* Botones */
+.factura-acciones {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.btn-imprimir {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.7rem 2rem;
+    border-radius: 50px;
+    border: 2px solid #094255;
+    background: white;
+    color: #094255;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-imprimir:hover {
+    background: #094255;
+    color: white;
+}
+
+/* Estilos de impresión */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .reservar-header {
+        display: none !important;
+    }
+
+    .reservar-resumen {
+        display: none !important;
+    }
+
+    .reservar-formulario h2 {
+        display: none !important;
+    }
+
+    .factura {
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .factura-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .factura-info {
+        text-align: left;
+    }
+
+    .factura-dos-col {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .factura-tabla {
+        font-size: 0.78rem;
+    }
+
+    .factura-totales {
+        max-width: 100%;
+    }
+
+    .factura-acciones {
+        flex-direction: column;
+    }
+}
+/* Sin hotel */
+.sin-hotel {
+    text-align: center;
+    padding: 3rem;
+    font-family: 'Baloo 2', cursive;
+    color: #094255;
+    font-size: 1.1rem;
+}
+
+.sin-hotel p {
+    margin-bottom: 1rem;
+}

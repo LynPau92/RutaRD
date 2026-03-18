@@ -118,3 +118,14 @@ main {
     background-color: #f4f6f8;
 }
 
+/*Media print*/
+@media print {
+    nav, header, footer, .navbar, .chatbot-btn, .chatbot-window {
+        display: none !important;
+    }
+
+    .page, main, article {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}

@@ -2,6 +2,7 @@
 @using Frontend.Models
 @inject Frontend.Services.HotelService HotelService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>Reservar - RutaRD</PageTitle>
 
@@ -11,109 +12,227 @@
         <p>Estás a un paso de tu próxima aventura en Puerto Plata</p>
     </div>
 
-    <div class="reservar-container">
-        <!-- Resumen de la reserva -->
-        <div class="reservar-resumen">
-            <h2>Resumen</h2>
-            <div class="resumen-hotel">
-                <img src="@hotel?.Imagen" alt="@hotel?.Nombre" class="resumen-img" />
-                <div>
-                    <h3>@hotel?.Nombre</h3>
-                    <p>📍 @hotel?.Ubicacion</p>
-                    <div class="resumen-estrellas">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <span class="@(i <= (hotel?.Estrellas ?? 0) ? "estrella activa" : "estrella")">★</span>
-                        }
+    @if (hotel == null)
+    {
+        <div class="sin-hotel">
+            <p>No se seleccionó ningún hotel.</p>
+            <a href="Hoteles" class="btn-volver-hoteles">Ir a Hoteles</a>
+        </div>
+    }
+    else
+    {
+        <div class="reservar-container">
+
+            <!-- Resumen -->
+            <div class="reservar-resumen">
+                <h2>Resumen</h2>
+                <div class="resumen-hotel">
+                    <img src="@hotel.Imagen" alt="@hotel.Nombre" class="resumen-img" />
+                    <div>
+                        <h3>@hotel.Nombre</h3>
+                        <p>@hotel.Ubicacion</p>
+                        <div class="resumen-estrellas">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="@(i <= hotel.Estrellas ? "estrella activa" : "estrella")">★</span>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="resumen-detalles">
-                <div class="resumen-fila">
-                    <span>Check-in</span>
-                    <span>@reserva.FechaEntrada.ToString("dd/MM/yyyy")</span>
-                </div>
-                <div class="resumen-fila">
-                    <span>Check-out</span>
-                    <span>@reserva.FechaSalida.ToString("dd/MM/yyyy")</span>
-                </div>
-                <div class="resumen-fila">
-                    <span>Noches</span>
-                    <span>@reserva.Noches</span>
-                </div>
-                <div class="resumen-fila">
-                    <span>Habitaciones</span>
-                    <span>@reserva.Habitaciones</span>
-                </div>
-                <div class="resumen-fila">
-                    <span>Adultos</span>
-                    <span>@reserva.Adultos</span>
-                </div>
-                <div class="resumen-fila">
-                    <span>Niños</span>
-                    <span>@reserva.Ninos</span>
-                </div>
-                <div class="resumen-fila total">
-                    <span>Total Estimado</span>
-                    <span>RD$ @reserva.TotalEstimado.ToString("N2")</span>
-                </div>
-            </div>
-        </div>
+                <div class="resumen-detalles">
+                    <div class="resumen-fila">
+                        <span>Check-in</span>
+                        <span>@reserva.FechaEntrada.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="resumen-fila">
+                        <span>Check-out</span>
+                        <span>@reserva.FechaSalida.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="resumen-fila">
+                        <span>Noches</span>
+                        <span>@reserva.Noches</span>
+                    </div>
+                    <div class="resumen-fila">
+                        <span>Habitaciones</span>
+                        <span>@reserva.Habitaciones</span>
+                    </div>
+                    <div class="resumen-fila">
+                        <span>Precio por noche</span>
+                        <span>RD$ @reserva.PrecioNoche.ToString("N2")</span>
+                    </div>
+                    <div class="resumen-fila">
+                        <span>Adultos (@reserva.Adultos)</span>
+                        <span>RD$ @((reserva.PrecioNoche * reserva.Adultos * reserva.Noches *
+                                                                                reserva.Habitaciones).ToString("N2"))</span>
+                        </div>
+                        @if (reserva.Ninos > 0)
+                        {
+                            <div class="resumen-fila">
+                                <span>Niños (@reserva.Ninos × 60%)</span>
+                                <span>RD$ @((reserva.PrecioNoche * 0.60m * reserva.Ninos * reserva.Noches *
+                                                                                                reserva.Habitaciones).ToString("N2"))</span>
+                                </div>
+                            }
+                            <div class="resumen-fila subtotal">
+                                <span>Subtotal por noche</span>
+                                <span>RD$ @((reserva.PrecioNoche * (reserva.Adultos + reserva.Ninos * 0.60m) *
+                                                                                                reserva.Habitaciones).ToString("N2"))</span>
+                                </div>
+                                <div class="resumen-fila total">
+                                    <span>Total Estimado</span>
+                                    <span>RD$ @reserva.TotalEstimado.ToString("N2")</span>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- Formulario -->
-        <div class="reservar-formulario">
-            <h2>Tus Datos</h2>
+                        <!-- Formulario o Factura -->
+                        <div class="reservar-formulario">
+                            <h2>Tus Datos</h2>
 
-            @if (reservaExitosa)
-            {
-                <div class="exito-msg">
-                    <p>✅ ¡Reserva enviada exitosamente!</p>
-                    <p>Te contactaremos pronto para confirmar tu reserva.</p>
-                    <a href="Hoteles" class="btn-volver-hoteles">Ver más hoteles</a>
-                </div>
-            }
-            else
-            {
-                <div class="form-grupo">
-                    <label>Nombre completo *</label>
-                    <input type="text" @bind="nombre" placeholder="Ej: María González" class="@(mostrarErrores && string.IsNullOrWhiteSpace(nombre) ? "input-error" : "")" />
-                    @if (mostrarErrores && string.IsNullOrWhiteSpace(nombre))
-                    {
-                        <span class="error-msg">El nombre es requerido</span>
-                    }
-                </div>
+                            @if (reservaExitosa)
+                            {
+                                <div class="factura" id="factura">
+                                    <div class="factura-header">
+                                        <div class="factura-logo">
+                                            <img src="/images/RutaRD.png" alt="RutaRD" class="factura-logo-img" />
+                                            <span class="factura-logo-texto">RutaRD</span>
+                                        </div>
+                                        <div class="factura-info">
+                                            <p class="factura-titulo">FACTURA DE RESERVA</p>
+                                            <p class="factura-numero">N° @numeroFactura</p>
+                                            <p class="factura-fecha">Fecha: @DateTime.Now.ToString("dd/MM/yyyy")</p>
+                                        </div>
+                                    </div>
 
-                <div class="form-grupo">
-                    <label>Correo electrónico *</label>
-                    <input type="email" @bind="correo" placeholder="Ej: maria@gmail.com" class="@(mostrarErrores && !CorreoValido ? "input-error" : "")" />
-                    @if (mostrarErrores && !CorreoValido)
-                    {
-                        <span class="error-msg">Ingresa un correo válido</span>
-                    }
-                </div>
+                                    <div class="factura-divider"></div>
 
-                <div class="form-grupo">
-                    <label>Teléfono *</label>
-                    <input type="tel" @bind="telefono" placeholder="Ej: 809-555-1234" class="@(mostrarErrores && string.IsNullOrWhiteSpace(telefono) ? "input-error" : "")" />
-                    @if (mostrarErrores && string.IsNullOrWhiteSpace(telefono))
-                    {
-                        <span class="error-msg">El teléfono es requerido</span>
-                    }
-                </div>
+                                    <div class="factura-dos-col">
+                                        <div>
+                                            <p class="factura-seccion-titulo">DATOS DEL CLIENTE</p>
+                                            <p><strong>Nombre:</strong> @nombre</p>
+                                            <p><strong>Correo:</strong> @correo</p>
+                                            <p><strong>Teléfono:</strong> @telefono</p>
+                                        </div>
+                                        <div>
+                                            <p class="factura-seccion-titulo">DATOS DE LA RESERVA</p>
+                                            <p><strong>Hotel:</strong> @hotel.Nombre</p>
+                                            <p><strong>Check-in:</strong> @reserva.FechaEntrada.ToString("dd/MM/yyyy")</p>
+                                            <p><strong>Check-out:</strong> @reserva.FechaSalida.ToString("dd/MM/yyyy")</p>
+                                            <p><strong>Noches:</strong> @reserva.Noches</p>
+                                            <p><strong>Habitaciones:</strong> @reserva.Habitaciones</p>
+                                        </div>
+                                    </div>
 
-                <div class="form-grupo">
-                    <label>Solicitudes especiales</label>
-                    <textarea @bind="solicitudes" placeholder="Ej: Cama doble, piso alto, llegada tardía..."></textarea>
-                </div>
+                                    <div class="factura-divider"></div>
 
-                <button class="btn-reservar" @onclick="EnviarReserva">
-                    Confirmar Reserva
-                </button>
-            }
-        </div>
-    </div>
-</div>
+                                    <p class="factura-seccion-titulo">DETALLE DE CARGOS</p>
+                                    <table class="factura-tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Cant.</th>
+                                                <th>Precio/Noche</th>
+                                                <th>Noches</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Adultos — @hotel.Nombre</td>
+                                                <td>@reserva.Adultos</td>
+                                                <td>RD$ @reserva.PrecioNoche.ToString("N2")</td>
+                                                <td>@reserva.Noches</td>
+                                                <td>RD$ @((reserva.PrecioNoche * reserva.Adultos * reserva.Noches *
+                                                                                                                                        reserva.Habitaciones).ToString("N2"))</td>
+                                                </tr>
+                                                @if (reserva.Ninos > 0)
+                                                {
+                                                    <tr>
+                                                        <td>Niños (60%) — @hotel.Nombre</td>
+                                                        <td>@reserva.Ninos</td>
+                                                        <td>RD$ @((reserva.PrecioNoche * 0.60m).ToString("N2"))</td>
+                                                        <td>@reserva.Noches</td>
+                                                        <td>RD$ @((reserva.PrecioNoche * 0.60m * reserva.Ninos * reserva.Noches *
+                                                                                                                                                        reserva.Habitaciones).ToString("N2"))</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                            <div class="factura-totales">
+                                                <div class="factura-total-fila">
+                                                    <span>Subtotal</span>
+                                                    <span>RD$ @reserva.TotalEstimado.ToString("N2")</span>
+                                                </div>
+                                                <div class="factura-total-fila">
+                                                    <span>ITBIS (18%)</span>
+                                                    <span>RD$ @((reserva.TotalEstimado * 0.18m).ToString("N2"))</span>
+                                                </div>
+                                                <div class="factura-divider"></div>
+                                                <div class="factura-total-fila gran-total">
+                                                    <span>TOTAL A PAGAR</span>
+                                                    <span>RD$ @((reserva.TotalEstimado * 1.18m).ToString("N2"))</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="factura-divider"></div>
+                                            <p class="factura-pie">Gracias por elegir RutaRD. Te contactaremos pronto para confirmar tu reserva.</p>
+                                            <p class="factura-pie">Puerto Plata, República Dominicana &nbsp;|&nbsp; info@rutard.com &nbsp;|&nbsp; +1
+                                                (809) 789-4512</p>
+                                            </div>
+
+                                            <div class="factura-acciones no-print">
+                                                <button class="btn-imprimir" @onclick="Imprimir">Imprimir Factura</button>
+                                                <a href="Hoteles" class="btn-volver-hoteles">Ver más hoteles</a>
+                                            </div>
+                                        }
+                else
+                                        {
+                                            <div class="form-grupo">
+                                                <label>Nombre completo *</label>
+                                                <input type="text" @bind="nombre" placeholder="Ej: María González"
+                                                       class="@(mostrarErrores && string.IsNullOrWhiteSpace(nombre) ? "input-error" : "")" />
+                                                @if (mostrarErrores && string.IsNullOrWhiteSpace(nombre))
+                                                {
+                                                    <span class="error-msg">El nombre es requerido</span>
+                                                }
+                                            </div>
+
+                                            <div class="form-grupo">
+                                                <label>Correo electrónico *</label>
+                                                <input type="email" @bind="correo" placeholder="Ej: maria@gmail.com"
+                                                       class="@(mostrarErrores && !CorreoValido ? "input-error" : "")" />
+                                                @if (mostrarErrores && !CorreoValido)
+                                                {
+                                                    <span class="error-msg">Ingresa un correo válido</span>
+                                                }
+                                            </div>
+
+                                            <div class="form-grupo">
+                                                <label>Teléfono *</label>
+                                                <input type="tel" @bind="telefono" placeholder="Ej: 809-555-1234"
+                                                       class="@(mostrarErrores && string.IsNullOrWhiteSpace(telefono) ? "input-error" : "")" />
+                                                @if (mostrarErrores && string.IsNullOrWhiteSpace(telefono))
+                                                {
+                                                    <span class="error-msg">El teléfono es requerido</span>
+                                                }
+                                            </div>
+
+                                            <div class="form-grupo">
+                                                <label>Solicitudes especiales</label>
+                                                <textarea @bind="solicitudes" placeholder="Ej: Cama doble, piso alto, llegada tardía..."></textarea>
+                                            </div>
+
+                                            <button class="btn-reservar" @onclick="EnviarReserva">
+                                                Confirmar Reserva
+                                            </button>
+                                        }
+                                    </div>
+
+                                </div>
+                            }
+                        </div>
 
 @code {
     [SupplyParameterFromQuery] public int HotelId { get; set; }
@@ -131,6 +250,7 @@
     private string solicitudes = "";
     private bool mostrarErrores = false;
     private bool reservaExitosa = false;
+    private string numeroFactura = "";
 
     private bool CorreoValido => !string.IsNullOrWhiteSpace(correo) && correo.Contains("@") && correo.Contains(".");
 
@@ -150,6 +270,7 @@
                 Habitaciones = Habitaciones,
                 PrecioNoche = hotel.PrecioNoche
             };
+            numeroFactura = $"RD-{DateTime.Now:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
         }
     }
 
@@ -159,5 +280,10 @@
         if (string.IsNullOrWhiteSpace(nombre) || !CorreoValido || string.IsNullOrWhiteSpace(telefono))
             return;
         reservaExitosa = true;
+    }
+
+    private async Task Imprimir()
+    {
+        await JS.InvokeVoidAsync("window.print");
     }
 }
