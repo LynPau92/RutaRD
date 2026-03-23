@@ -1,0 +1,84 @@
+@inject NavigationManager Navigation
+
+<div class="buscador-general">
+    <div class="buscador-general-grid">
+
+        <!-- Lugar -->
+        <div class="buscador-campo">
+            <label>@Categoria</label>
+            <select>
+                <option value="">Selecciona una opción</option>
+                @foreach (var opcion in Opciones)
+                {
+                    <option value="@opcion">@opcion</option>
+                }
+            </select>
+        </div>
+
+        <!-- Fecha -->
+        <div class="buscador-campo">
+            <label>Fecha</label>
+            <input type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <!-- Horario -->
+        <div class="buscador-campo">
+            <label>Horario</label>
+            <input type="time" value="10:00" />
+        </div>
+
+        <!-- Personas -->
+        <div class="buscador-campo personas-campo">
+            <label>Personas</label>
+            <div class="personas-trigger @(personasAbierto ? "activo" : "")" @onclick="TogglePersonas">
+                <span>@adultos adulto@(adultos > 1 ? "s" : "") · @ninos niño@(ninos != 1 ? "s" : "")</span>
+                <span class="chevron">▾</span>
+            </div>
+            @if (personasAbierto)
+            {
+                <div class="personas-dropdown">
+                    <div class="persona-control">
+                        <div>
+                            <p class="persona-label">Adultos</p>
+                            <p class="persona-sublabel">Edad 18+</p>
+                        </div>
+                        <div class="contador">
+                            <button @onclick="() => adultos = Math.Max(1, adultos - 1)" @onclick:stopPropagation>−</button>
+                            <span>@adultos</span>
+                            <button @onclick="() => adultos++" @onclick:stopPropagation>+</button>
+                        </div>
+                    </div>
+                    <div class="persona-control">
+                        <div>
+                            <p class="persona-label">Niños</p>
+                            <p class="persona-sublabel">Edad 0-17</p>
+                        </div>
+                        <div class="contador">
+                            <button @onclick="() => ninos = Math.Max(0, ninos - 1)" @onclick:stopPropagation>−</button>
+                            <span>@ninos</span>
+                            <button @onclick="() => ninos++" @onclick:stopPropagation>+</button>
+                        </div>
+                    </div>
+                    <button class="btn-listo" @onclick="TogglePersonas">Listo</button>
+                </div>
+            }
+        </div>
+
+        <!-- Botón -->
+        <div class="buscador-campo buscador-btn-container">
+            <button class="btn-buscar">Buscar</button>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Categoria { get; set; } = "Lugar";
+    [Parameter] public List<string> Opciones { get; set; } = new();
+
+    private int adultos = 2;
+    private int ninos = 0;
+    private bool personasAbierto = false;
+
+    private void TogglePersonas() => personasAbierto = !personasAbierto;
+}

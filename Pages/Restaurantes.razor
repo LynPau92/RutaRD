@@ -1,5 +1,6 @@
 ﻿@page "/Restaurantes"
 @using Frontend.Models
+@using Frontend.Shared
 @inject Frontend.Services.RestauranteService RestauranteService
 
 <PageTitle>Restaurantes - Puerto Plata</PageTitle>
@@ -31,7 +32,11 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Buscador General para reservas de restaurantes -->
+    <BuscadorGeneral Categoria="Restaurante"
+    Opciones="restaurantes.Select(r => r.Nombre).ToList()" />
+    
     <div class="restaurantes-grid">
         @foreach (var restaurante in RestaurantesFiltrados)
         {

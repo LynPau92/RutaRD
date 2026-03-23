@@ -1,5 +1,6 @@
 @page "/Turismo-ecologico"
 @using Frontend.Models
+@using Frontend.Shared
 @inject Frontend.Services.TurismoEcologicoService TurismoEcologicoService
 
 <PageTitle>Turismo Ecológico - Puerto Plata</PageTitle>
@@ -20,6 +21,11 @@
         <button class="filtro-btn @(filtroActivo == "Cueva" ? "activo" : "")" @onclick='() => filtroActivo = "Cueva"'>Cuevas</button>
         
     </div>
+
+    <!-- Buscador General para lugares ecológicos -->
+    <BuscadorGeneral Categoria="Lugar ecológico"
+    Opciones="lugares.Select(l => l.Nombre).ToList()" />
+
 
     <div class="ecologico-grid">
         @foreach (var lugar in LugaresFiltrados)

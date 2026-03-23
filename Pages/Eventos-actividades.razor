@@ -1,5 +1,6 @@
 @page "/Eventos-actividades"
 @using Frontend.Models
+@using Frontend.Shared
 @inject Frontend.Services.EventosActividadesService EventosActividadesService
 
 <PageTitle>Eventos y Actividades - Puerto Plata</PageTitle>
@@ -16,6 +17,11 @@
         <button class="filtro-btn @(filtroActivo == "Actividad" ? "activo" : "")" @onclick='() => filtroActivo = "Actividad"'>Actividades</button>
         <button class="filtro-btn @(filtroActivo == "Festival" ? "activo" : "")" @onclick='() => filtroActivo = "Festival"'>Festivales</button>
     </div>
+
+    <!-- Buscador General para eventos y actividades -->
+    <BuscadorGeneral Categoria="Evento o actividad"
+    Opciones="eventos.Select(e => e.Nombre).ToList()" />
+
 
     <div class="eventos-grid">
         @foreach (var evento in EventosFiltrados)

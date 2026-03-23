@@ -1,5 +1,6 @@
 @page "/Turismo-cultural"
 @using Frontend.Models
+@using Frontend.Shared
 @inject Frontend.Services.TurismoCulturalService TurismoCulturalService
 
 <PageTitle>Turismo Cultural - Puerto Plata</PageTitle>
@@ -19,6 +20,9 @@
         <button class="filtro-btn @(filtroActivo == "Monumento" ? "activo" : "")" @onclick='() => filtroActivo = "Monumento"'>Monumentos</button>
         <button class="filtro-btn @(filtroActivo == "Centro Cultural" ? "activo" : "")" @onclick='() => filtroActivo = "Centro Cultural"'>Centros Culturales</button>
     </div>
+
+    <BuscadorGeneral Categoria="Lugar cultural"
+    Opciones="lugares.Select(l => l.Nombre).ToList()" />
 
     <div class="cultural-grid">
         @foreach (var lugar in LugaresFiltrados)
