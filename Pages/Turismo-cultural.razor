@@ -21,6 +21,7 @@
         <button class="filtro-btn @(filtroActivo == "Centro Cultural" ? "activo" : "")" @onclick='() => filtroActivo = "Centro Cultural"'>Centros Culturales</button>
     </div>
 
+    <!-- Buscador General para lugares culturales -->
     <BuscadorGeneral Categoria="Lugar cultural"
     Opciones="lugares.Select(l => l.Nombre).ToList()" />
 
