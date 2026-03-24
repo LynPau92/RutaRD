@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Frontend.csproj" />
+    <ProjectReference Include="..\RutaRD.Core\RutaRD.Core.csproj" />
   </ItemGroup>
 
 </Project>
