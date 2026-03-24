@@ -13,5 +13,6 @@ builder.Services.AddScoped<RestauranteService>();
 builder.Services.AddScoped<TurismoEcologicoService>();
 builder.Services.AddScoped<EventosActividadesService>();
 builder.Services.AddScoped<TurismoCulturalService>();
+builder.Services.AddScoped<AuthService>();
 
 await builder.Build().RunAsync();

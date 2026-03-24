@@ -1,12 +1,12 @@
 .config-page {
     padding: 2rem;
-    max-width: 800px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
 .config-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .config-header h1 {
@@ -22,6 +22,43 @@
     color: #42abc3;
 }
 
+/* Tabs principales */
+.config-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(9,66,85,0.08);
+}
+
+.config-tab {
+    flex: 1;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.config-tab.activo {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(9,66,85,0.25);
+}
+
+.config-tab:hover:not(.activo) {
+    background: #f4f6f8;
+    color: #094255;
+}
+
+/* Container */
 .config-container {
     display: flex;
     flex-direction: column;
@@ -32,43 +69,259 @@
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(9,66,85,0.08);
 }
 
 .config-section h2 {
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.1rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.6rem;
     color: #094255;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
 }
 
+/* Section header con botón */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.section-header h2 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.btn-agregar {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-agregar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(9,66,85,0.3);
+}
+
+/* Formulario inline */
+.form-inline {
+    background: #f8fbfc;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-publicacion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-grupo label {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #094255;
+}
+
+.form-grupo input,
+.form-grupo select,
+.form-grupo textarea {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    color: #333;
+    transition: border-color 0.2s;
+    background: white;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus,
+.form-grupo textarea:focus {
+    border-color: #42abc3;
+}
+
+.form-grupo textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-acciones {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-guardar {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.55rem 1.5rem;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-guardar:hover {
+    transform: translateY(-1px);
+}
+
+.btn-cancelar {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 1.5rem;
+    border-radius: 50px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+    border-color: #094255;
+    color: #094255;
+}
+
+.msg-exito {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    color: #27ae60;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Tabla de usuarios */
+.tabla-container {
+    overflow-x: auto;
+}
+
+.usuarios-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+}
+
+.usuarios-tabla thead tr {
+    background: #094255;
+    color: white;
+}
+
+.usuarios-tabla th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.usuarios-tabla td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+}
+
+.usuarios-tabla tbody tr:hover {
+    background: #f8fbfc;
+}
+
+.rol-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.rol-badge.admin {
+    background: linear-gradient(135deg, #094255, #42abc3);
+    color: white;
+}
+
+.rol-badge.cliente {
+    background: #f0f8ff;
+    color: #094255;
+    border: 1px solid #42abc3;
+}
+
+.btn-eliminar {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.82rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 2px solid #e74c3c;
+    background: transparent;
+    color: #e74c3c;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-eliminar:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Config general */
 .config-option {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.config-option:last-child {
+    border-bottom: none;
 }
 
 .config-option label {
     font-family: 'Baloo 2', cursive;
     font-size: 0.95rem;
-    color: #555;
+    color: #333;
 }
 
 .config-select {
     font-family: 'Baloo 2', cursive;
-    padding: 0.4rem 1rem;
-    border-radius: 50px;
-    border: 2px solid #094255;
-    color: #094255;
     font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
     outline: none;
-    cursor: pointer;
+    color: #333;
 }
 
-/* Tema */
 .tema-opciones {
     display: flex;
     gap: 0.5rem;
@@ -76,85 +329,100 @@
 
 .tema-btn {
     font-family: 'Baloo 2', cursive;
-    padding: 0.4rem 1.25rem;
-    border-radius: 50px;
-    border: 2px solid #094255;
-    background: white;
-    color: #094255;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
+    padding: 0.45rem 1.25rem;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #888;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .tema-btn.activo {
-    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    background: #094255;
     color: white;
-    border-color: transparent;
+    border-color: #094255;
 }
 
-/* Toggle */
 .toggle-option {
-    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .toggle {
     width: 48px;
     height: 26px;
-    background: #ddd;
+    background: #e0e0e0;
     border-radius: 50px;
     position: relative;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.2s;
 }
 
 .toggle.activo {
-    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    background: #42abc3;
 }
 
 .toggle-circle {
-    position: absolute;
-    top: 3px;
-    left: 3px;
     width: 20px;
     height: 20px;
     background: white;
     border-radius: 50%;
-    transition: transform 0.3s;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: left 0.2s;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 
 .toggle.activo .toggle-circle {
-    transform: translateX(22px);
+    left: 25px;
 }
 
-/* Acerca de */
-.acerca-info {
+.acerca-info p {
     font-family: 'Baloo 2', cursive;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: #555;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.acerca-info strong {
-    color: #094255;
+    margin-bottom: 0.5rem;
 }
 
 .acerca-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-top: 0.5rem;
 }
 
 .acerca-links a {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.88rem;
     color: #42abc3;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
+    text-decoration: underline;
 }
 
-.acerca-links a:hover {
-    color: #094255;
+/* Responsive */
+@media (max-width: 768px) {
+    .config-page {
+        padding: 1rem;
+    }
+
+    .config-header h1 {
+        font-size: 2rem;
+    }
+
+    .config-tabs {
+        flex-direction: column;
+    }
+
+    .form-fila {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
 }

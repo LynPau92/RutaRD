@@ -1,4 +1,9 @@
-﻿<div class="navbar-wrapper">
+﻿@using Frontend.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<div class="navbar-wrapper">
     <!-- Barra superior -->
     <div class="navbar-top-bar">
         <div class="navbar-top-container">
@@ -29,7 +34,16 @@
                 <NavLink href="Eventos-actividades" @onclick="CerrarMenu">Eventos y Actividades</NavLink>
                 <NavLink href="Turismo-cultural" @onclick="CerrarMenu">Turismo Cultural</NavLink>
                 <NavLink href="Turismo-ecologico" @onclick="CerrarMenu">Turismo Ecológico</NavLink>
-                <NavLink href="Configuracion" @onclick="CerrarMenu">Configuración</NavLink>
+                @if (AuthService.EsAdmin)
+                {
+                    <NavLink href="Configuracion" @onclick="CerrarMenu">Configuración</NavLink>
+                }
+
+                <!-- Usuario y cerrar sesión -->
+                <div class="navbar-usuario">
+                    <span class="usuario-nombre"> @AuthService.UsuarioActual?.Nombre</span>
+                    <button class="btn-cerrar-sesion" @onclick="CerrarSesion">Cerrar sesión</button>
+                </div>
             </nav>
         </div>
     </div>
@@ -40,4 +54,20 @@
 
     private void ToggleMenu() => menuAbierto = !menuAbierto;
     private void CerrarMenu() => menuAbierto = false;
+
+    protected override void OnInitialized()
+    {
+        AuthService.OnCambio += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnCambio -= StateHasChanged;
+    }
+
+    private async Task CerrarSesion()
+    {
+        await AuthService.CerrarSesion();
+        Navigation.NavigateTo("/Login");
+    }
 }

@@ -1,0 +1,176 @@
+@page "/Login"
+@using Frontend.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Iniciar Sesión - RutaRD</PageTitle>
+
+<div class="login-page">
+    <div class="login-card">
+
+        <div class="login-logo">
+            <img src="/images/RutaRD.png" alt="RutaRD" />
+            <span>RutaRD</span>
+        </div>
+
+        <p class="login-subtitulo">Tu guía de turismo local en Puerto Plata</p>
+
+        <!-- Tabs -->
+        <div class="login-tabs">
+            <button class="tab-btn @(tabActivo == "login" ? "activo" : "")"
+                @onclick='() => tabActivo = "login"'>
+                Iniciar Sesión
+            </button>
+            <button class="tab-btn @(tabActivo == "registro" ? "activo" : "")"
+                @onclick='() => tabActivo = "registro"'>
+                Registrarse
+            </button>
+        </div>
+
+        <!-- Login -->
+        @if (tabActivo == "login")
+        {
+            <div class="login-form">
+                <div class="form-grupo">
+                    <label>Correo electrónico</label>
+                    <input type="email" @bind="loginCorreo" placeholder="correo@ejemplo.com"
+                        class="@(mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin) ? "input-error" : "")" />
+                </div>
+
+                <div class="form-grupo">
+                    <label>Contraseña</label>
+                    <input type="password" @bind="loginContrasena" placeholder="Tu contraseña"
+                        class="@(mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin) ? "input-error" : "")" />
+                </div>
+
+                @if (mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin))
+                {
+                    <p class="error-msg">@errorLogin</p>
+                }
+
+                <button class="btn-login" @onclick="HacerLogin">Iniciar Sesión</button>
+
+                <p class="login-hint">
+                    ¿Primera vez? <span @onclick='() => tabActivo = "registro"'>Regístrate aquí</span>
+                </p>
+            </div>
+        }
+
+        <!-- Registro -->
+        @if (tabActivo == "registro")
+        {
+            <div class="login-form">
+                <div class="form-grupo">
+                    <label>Nombre completo *</label>
+                    <input type="text" @bind="regNombre" placeholder="Ej: María González"
+                        class="@(mostrarErrorReg && string.IsNullOrWhiteSpace(regNombre) ? "input-error" : "")" />
+                    @if (mostrarErrorReg && string.IsNullOrWhiteSpace(regNombre))
+                    {
+                        <span class="error-msg">El nombre es requerido</span>
+                    }
+                </div>
+
+                <div class="form-grupo">
+                    <label>Correo electrónico *</label>
+                    <input type="email" @bind="regCorreo" placeholder="correo@ejemplo.com"
+                        class="@(mostrarErrorReg && !CorreoRegValido ? "input-error" : "")" />
+                    @if (mostrarErrorReg && !CorreoRegValido)
+                    {
+                        <span class="error-msg">Ingresa un correo válido</span>
+                    }
+                </div>
+
+                <div class="form-grupo">
+                    <label>Contraseña *</label>
+                    <input type="password" @bind="regContrasena" placeholder="Mínimo 6 caracteres"
+                        class="@(mostrarErrorReg && regContrasena.Length < 6 ? "input-error" : "")" />
+                    @if (mostrarErrorReg && regContrasena.Length < 6)
+                    {
+                        <span class="error-msg">La contraseña debe tener al menos 6 caracteres</span>
+                    }
+                </div>
+
+                <div class="form-grupo">
+                    <label>Confirmar contraseña *</label>
+                    <input type="password" @bind="regConfirmar" placeholder="Repite tu contraseña"
+                        class="@(mostrarErrorReg && regContrasena != regConfirmar ? "input-error" : "")" />
+                    @if (mostrarErrorReg && regContrasena != regConfirmar)
+                    {
+                        <span class="error-msg">Las contraseñas no coinciden</span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(errorRegistro))
+                {
+                    <p class="error-msg">@errorRegistro</p>
+                }
+
+                <button class="btn-login" @onclick="HacerRegistro">Crear Cuenta</button>
+
+                <p class="login-hint">
+                    ¿Ya tienes cuenta? <span @onclick='() => tabActivo = "login"'>Inicia sesión</span>
+                </p>
+            </div>
+        }
+
+    </div>
+</div>
+
+@code {
+    private string tabActivo = "login";
+
+    private string loginCorreo = "";
+    private string loginContrasena = "";
+    private string errorLogin = "";
+    private bool mostrarErrorLogin = false;
+
+    private string regNombre = "";
+    private string regCorreo = "";
+    private string regContrasena = "";
+    private string regConfirmar = "";
+    private string errorRegistro = "";
+    private bool mostrarErrorReg = false;
+
+    private bool CorreoRegValido => !string.IsNullOrWhiteSpace(regCorreo) &&
+        regCorreo.Contains("@") && regCorreo.Contains(".");
+
+    private void HacerLogin()
+    {
+        mostrarErrorLogin = true;
+        errorLogin = "";
+
+        if (string.IsNullOrWhiteSpace(loginCorreo) || string.IsNullOrWhiteSpace(loginContrasena))
+        {
+            errorLogin = "Por favor completa todos los campos.";
+            return;
+        }
+
+        var error = AuthService.Login(loginCorreo, loginContrasena);
+        if (error != null)
+        {
+            errorLogin = error;
+            return;
+        }
+
+        Navigation.NavigateTo("/");
+    }
+
+    private void HacerRegistro()
+    {
+        mostrarErrorReg = true;
+        errorRegistro = "";
+
+        if (string.IsNullOrWhiteSpace(regNombre) || !CorreoRegValido ||
+            regContrasena.Length < 6 || regContrasena != regConfirmar)
+            return;
+
+        var error = AuthService.Registrar(regNombre, regCorreo, regContrasena);
+        if (error != null)
+        {
+            errorRegistro = error;
+            return;
+        }
+
+        Navigation.NavigateTo("/");
+    }
+}
