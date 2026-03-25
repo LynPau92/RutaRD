@@ -20,7 +20,7 @@ else
             <div class="detalle-hero-content">
                 <a href="Restaurantes" class="btn-volver">← Volver</a>
                 <h1>@restaurante.Nombre</h1>
-                <p>📍 @restaurante.Ubicacion</p>
+                <p>@restaurante.Ubicacion</p>
                 <div class="detalle-estrellas">
                     @for (int i = 1; i <= 5; i++)
                     {
@@ -39,19 +39,19 @@ else
                     <div class="dieta-tags">
                         @if (restaurante.OpcionVegetariana)
                         {
-                            <span class="dieta-tag vegetariano">🌿 Vegetariano</span>
+                            <span class="dieta-tag vegetariano">Vegetariano</span>
                         }
                         @if (restaurante.OpcionVegana)
                         {
-                            <span class="dieta-tag vegano">🌱 Vegano</span>
+                            <span class="dieta-tag vegano">Vegano</span>
                         }
                     </div>
                 </div>
 
                 <div class="detalle-seccion">
                     <h2>Información</h2>
-                    <p>💰 Rango de precios: <strong>@restaurante.RangoPrecios</strong></p>
-                    <p>📞 @restaurante.Telefono</p>
+                    <p>Rango de precios: <strong>@restaurante.RangoPrecios</strong></p>
+                    <p>@restaurante.Telefono</p>
                     <div class="detalle-actions">
                         <a href="@restaurante.GoogleMapsUrl" target="_blank" class="btn-mapa">Ver en Mapa</a>
                         <a href="@restaurante.SitioWeb" target="_blank" class="btn-sitio">Sitio Web</a>

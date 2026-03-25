@@ -1,5 +1,6 @@
 @page "/Login"
 @using Frontend.Services
+@using Microsoft.AspNetCore.Components
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
@@ -17,12 +18,10 @@
 
         <!-- Tabs -->
         <div class="login-tabs">
-            <button class="tab-btn @(tabActivo == "login" ? "activo" : "")"
-                @onclick='() => tabActivo = "login"'>
+            <button class="tab-btn @(tabActivo == "login" ? "activo" : "")" @onclick='() => tabActivo = "login"'>
                 Iniciar Sesión
             </button>
-            <button class="tab-btn @(tabActivo == "registro" ? "activo" : "")"
-                @onclick='() => tabActivo = "registro"'>
+            <button class="tab-btn @(tabActivo == "registro" ? "activo" : "")" @onclick='() => tabActivo = "registro"'>
                 Registrarse
             </button>
         </div>
@@ -34,13 +33,20 @@
                 <div class="form-grupo">
                     <label>Correo electrónico</label>
                     <input type="email" @bind="loginCorreo" placeholder="correo@ejemplo.com"
-                        class="@(mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin) ? "input-error" : "")" />
+                           class="@(mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin) ? "input-error" : "")" />
                 </div>
 
                 <div class="form-grupo">
                     <label>Contraseña</label>
-                    <input type="password" @bind="loginContrasena" placeholder="Tu contraseña"
-                        class="@(mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin) ? "input-error" : "")" />
+                    <div class="input-con-icono">
+                        <input type="@(verLoginPass ? "text" : "password")" @bind="loginContrasena"
+                               placeholder="Tu contraseña"
+                               class="@(mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin) ? "input-error" : "")" />
+                        <span class="toggle-pass" @onclick="() => verLoginPass = !verLoginPass">
+                            <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/icons/@(verLoginPass ? "eye-slash" : "eye").svg"
+                                 width="18" height="18" style="opacity:0.5;" />
+                        </span>
+                    </div>
                 </div>
 
                 @if (mostrarErrorLogin && !string.IsNullOrEmpty(errorLogin))
@@ -63,7 +69,7 @@
                 <div class="form-grupo">
                     <label>Nombre completo *</label>
                     <input type="text" @bind="regNombre" placeholder="Ej: María González"
-                        class="@(mostrarErrorReg && string.IsNullOrWhiteSpace(regNombre) ? "input-error" : "")" />
+                           class="@(mostrarErrorReg && string.IsNullOrWhiteSpace(regNombre) ? "input-error" : "")" />
                     @if (mostrarErrorReg && string.IsNullOrWhiteSpace(regNombre))
                     {
                         <span class="error-msg">El nombre es requerido</span>
@@ -73,7 +79,7 @@
                 <div class="form-grupo">
                     <label>Correo electrónico *</label>
                     <input type="email" @bind="regCorreo" placeholder="correo@ejemplo.com"
-                        class="@(mostrarErrorReg && !CorreoRegValido ? "input-error" : "")" />
+                           class="@(mostrarErrorReg && !CorreoRegValido ? "input-error" : "")" />
                     @if (mostrarErrorReg && !CorreoRegValido)
                     {
                         <span class="error-msg">Ingresa un correo válido</span>
@@ -82,8 +88,15 @@
 
                 <div class="form-grupo">
                     <label>Contraseña *</label>
-                    <input type="password" @bind="regContrasena" placeholder="Mínimo 6 caracteres"
-                        class="@(mostrarErrorReg && regContrasena.Length < 6 ? "input-error" : "")" />
+                    <div class="input-con-icono">
+                        <input type="@(verRegPass ? "text" : "password")" @bind="regContrasena"
+                               placeholder="Mínimo 6 caracteres"
+                               class="@(mostrarErrorReg && regContrasena.Length < 6 ? "input-error" : "")" />
+                        <span class="toggle-pass" @onclick="() => verRegPass = !verRegPass">
+                            <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/icons/@(verRegPass ? "eye-slash" : "eye").svg"
+                                 width="18" height="18" style="opacity:0.5;" />
+                        </span>
+                    </div>
                     @if (mostrarErrorReg && regContrasena.Length < 6)
                     {
                         <span class="error-msg">La contraseña debe tener al menos 6 caracteres</span>
@@ -92,8 +105,15 @@
 
                 <div class="form-grupo">
                     <label>Confirmar contraseña *</label>
-                    <input type="password" @bind="regConfirmar" placeholder="Repite tu contraseña"
-                        class="@(mostrarErrorReg && regContrasena != regConfirmar ? "input-error" : "")" />
+                    <div class="input-con-icono">
+                        <input type="@(verRegConfirmar ? "text" : "password")" @bind="regConfirmar"
+                               placeholder="Repite tu contraseña"
+                               class="@(mostrarErrorReg && regContrasena != regConfirmar ? "input-error" : "")" />
+                        <span class="toggle-pass" @onclick="() => verRegConfirmar = !verRegConfirmar">
+                            <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/icons/@(verRegConfirmar ? "eye-slash" : "eye").svg"
+                                 width="18" height="18" style="opacity:0.5;" />
+                        </span>
+                    </div>
                     @if (mostrarErrorReg && regContrasena != regConfirmar)
                     {
                         <span class="error-msg">Las contraseñas no coinciden</span>
@@ -133,6 +153,10 @@
 
     private bool CorreoRegValido => !string.IsNullOrWhiteSpace(regCorreo) &&
         regCorreo.Contains("@") && regCorreo.Contains(".");
+
+    private bool verLoginPass = false;
+    private bool verRegPass = false;
+    private bool verRegConfirmar = false;
 
     private void HacerLogin()
     {
