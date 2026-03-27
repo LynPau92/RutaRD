@@ -1,4 +1,6 @@
 using Microsoft.JSInterop;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Frontend.Services
 {
@@ -6,30 +8,20 @@ namespace Frontend.Services
     {
         public string Nombre { get; set; } = "";
         public string Correo { get; set; } = "";
-        public string Contrasena { get; set; } = "";
         public string Rol { get; set; } = "Cliente";
     }
 
     public class AuthService
     {
         private readonly IJSRuntime _js;
+        private readonly HttpClient _http;
         public Usuario? UsuarioActual { get; private set; }
         public event Action? OnCambio;
 
-        private List<Usuario> _usuarios = new()
-        {
-            new Usuario
-            {
-                Nombre = "Administrador",
-                Correo = "admin@rutard.com",
-                Contrasena = "Admin123",
-                Rol = "Administrador"
-            }
-        };
-
-        public AuthService(IJSRuntime js)
+        public AuthService(IJSRuntime js, HttpClient http)
         {
             _js = js;
+            _http = http;
         }
 
         public async Task InicializarAsync()
@@ -54,39 +46,76 @@ namespace Frontend.Services
             catch { }
         }
 
-        public string? Login(string correo, string contrasena)
+        public async Task<string?> LoginAsync(string correo, string contrasena)
         {
-            var usuario = _usuarios.FirstOrDefault(u =>
-                u.Correo.ToLower() == correo.ToLower() &&
-                u.Contrasena == contrasena);
+            try
+            {
+                var response = await _http.PostAsJsonAsync("http://localhost:5000/api/auth/login",
+                    new { correo, contrasena });
 
-            if (usuario == null)
-                return "Correo o contraseña incorrectos.";
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    return "Correo o contraseña incorrectos.";
+                }
 
-            UsuarioActual = usuario;
-            GuardarSesion();
-            OnCambio?.Invoke();
-            return null;
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                if (result?.usuario != null)
+                {
+                    UsuarioActual = new Usuario
+                    {
+                        Correo = result.usuario.correo,
+                        Rol = result.usuario.rol,
+                        Nombre = result.usuario.nombre
+                    };
+                    await GuardarSesionAsync();
+                    OnCambio?.Invoke();
+                    return null;
+                }
+
+                return "Error al procesar la respuesta.";
+            }
+            catch (Exception ex)
+            {
+                return $"Error de conexión: {ex.Message}";
+            }
         }
 
-        public string? Registrar(string nombre, string correo, string contrasena)
+        public async Task<string?> RegistrarAsync(string nombre, string correo, string contrasena)
         {
-            if (_usuarios.Any(u => u.Correo.ToLower() == correo.ToLower()))
-                return "Este correo ya está registrado.";
-
-            var nuevo = new Usuario
+            try
             {
-                Nombre = nombre,
-                Correo = correo,
-                Contrasena = contrasena,
-                Rol = "Cliente"
-            };
+                var response = await _http.PostAsJsonAsync("http://localhost:5000/api/auth/register",
+                    new { nombre, correo, contrasena });
 
-            _usuarios.Add(nuevo);
-            UsuarioActual = nuevo;
-            GuardarSesion();
-            OnCambio?.Invoke();
-            return null;
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    return "El correo ya está registrado o hubo un error.";
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<RegisterResponse>();
+
+                if (result?.usuario != null)
+                {
+                    UsuarioActual = new Usuario
+                    {
+                        Correo = result.usuario.correo,
+                        Rol = result.usuario.rol,
+                        Nombre = result.usuario.nombre
+                    };
+                    await GuardarSesionAsync();
+                    OnCambio?.Invoke();
+                    return null;
+                }
+
+                return "Error al procesar la respuesta.";
+            }
+            catch (Exception ex)
+            {
+                return $"Error de conexión: {ex.Message}";
+            }
         }
 
         public async Task CerrarSesion()
@@ -101,7 +130,7 @@ namespace Frontend.Services
         public bool EstaAutenticado => UsuarioActual != null;
         public bool EsAdmin => UsuarioActual?.Rol == "Administrador";
 
-        private async void GuardarSesion()
+        private async Task GuardarSesionAsync()
         {
             try
             {
@@ -111,5 +140,25 @@ namespace Frontend.Services
             }
             catch { }
         }
+    }
+
+    public class LoginResponse
+    {
+        public string message { get; set; } = "";
+        public UsuarioData? usuario { get; set; }
+    }
+
+    public class RegisterResponse
+    {
+        public string message { get; set; } = "";
+        public UsuarioData? usuario { get; set; }
+    }
+
+    public class UsuarioData
+    {
+        public int id { get; set; }
+        public string nombre { get; set; } = "";
+        public string correo { get; set; } = "";
+        public string rol { get; set; } = "";
     }
 }

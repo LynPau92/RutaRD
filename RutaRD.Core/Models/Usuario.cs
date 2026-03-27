@@ -16,7 +16,6 @@ namespace RutaRD.Core.Models
 
         [Required]
         [MaxLength(150)]
-        [Index(IsUnique = true)]
         public string Correo { get; set; } = "";
 
         [Required]
@@ -27,7 +26,7 @@ namespace RutaRD.Core.Models
         [MaxLength(20)]
         public string Rol { get; set; } = "Cliente"; // 'Cliente' o 'Administrador'
 
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
         // Propiedad de navegación
         public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();

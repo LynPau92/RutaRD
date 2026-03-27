@@ -134,7 +134,7 @@
     private bool CorreoRegValido => !string.IsNullOrWhiteSpace(regCorreo) &&
         regCorreo.Contains("@") && regCorreo.Contains(".");
 
-    private void HacerLogin()
+    private async Task HacerLogin()
     {
         mostrarErrorLogin = true;
         errorLogin = "";
@@ -145,7 +145,7 @@
             return;
         }
 
-        var error = AuthService.Login(loginCorreo, loginContrasena);
+        var error = await AuthService.LoginAsync(loginCorreo, loginContrasena);
         if (error != null)
         {
             errorLogin = error;
@@ -155,7 +155,7 @@
         Navigation.NavigateTo("/");
     }
 
-    private void HacerRegistro()
+    private async Task HacerRegistro()
     {
         mostrarErrorReg = true;
         errorRegistro = "";
@@ -164,7 +164,7 @@
             regContrasena.Length < 6 || regContrasena != regConfirmar)
             return;
 
-        var error = AuthService.Registrar(regNombre, regCorreo, regContrasena);
+        var error = await AuthService.RegistrarAsync(regNombre, regCorreo, regContrasena);
         if (error != null)
         {
             errorRegistro = error;

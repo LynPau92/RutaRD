@@ -24,6 +24,17 @@ namespace RutaRD.Api.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configurar nombres de tablas en minúsculas sin comillas
+            modelBuilder.Entity<Usuario>().ToTable("usuarios");
+            modelBuilder.Entity<Hotel>().ToTable("hoteles");
+            modelBuilder.Entity<HotelServicio>().ToTable("hotel_servicios");
+            modelBuilder.Entity<Restaurante>().ToTable("restaurantes");
+            modelBuilder.Entity<TurismoEcologico>().ToTable("turismo_ecologico");
+            modelBuilder.Entity<TurismoCultural>().ToTable("turismo_cultural");
+            modelBuilder.Entity<EventosActividades>().ToTable("eventos_actividades");
+            modelBuilder.Entity<Resena>().ToTable("resenas");
+            modelBuilder.Entity<Reserva>().ToTable("reservas");
+
             // Configuración de Usuario
             modelBuilder.Entity<Usuario>(entity =>
             {
@@ -109,9 +120,6 @@ namespace RutaRD.Api.Data
                     .HasForeignKey(r => r.HotelId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-
-            // Sembrar datos iniciales
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(RutaRDbContext).Assembly);
         }
     }
 }
