@@ -39,7 +39,7 @@ namespace RutaRD.Core.Models
         [MaxLength(50)]
         public string? Tipo { get; set; } = ""; // Resort, Boutique, Todo Incluido
 
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
         // Propiedades de navegación
         public virtual ICollection<HotelServicio> HotelServicios { get; set; } = new List<HotelServicio>();

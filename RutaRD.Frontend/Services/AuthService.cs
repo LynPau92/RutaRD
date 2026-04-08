@@ -6,6 +6,7 @@ namespace Frontend.Services
 {
     public class Usuario
     {
+        public int Id { get; set; }
         public string Nombre { get; set; } = "";
         public string Correo { get; set; } = "";
         public string Rol { get; set; } = "Cliente";
@@ -28,14 +29,16 @@ namespace Frontend.Services
         {
             try
             {
+                var idStr = await _js.InvokeAsync<string>("localStorage.getItem", "rutard_id");
                 var correo = await _js.InvokeAsync<string>("localStorage.getItem", "rutard_correo");
                 var rol = await _js.InvokeAsync<string>("localStorage.getItem", "rutard_rol");
                 var nombre = await _js.InvokeAsync<string>("localStorage.getItem", "rutard_nombre");
 
-                if (!string.IsNullOrEmpty(correo))
+                if (!string.IsNullOrEmpty(correo) && int.TryParse(idStr, out var id))
                 {
                     UsuarioActual = new Usuario
                     {
+                        Id = id,
                         Correo = correo,
                         Rol = rol ?? "Cliente",
                         Nombre = nombre ?? ""
@@ -65,6 +68,7 @@ namespace Frontend.Services
                 {
                     UsuarioActual = new Usuario
                     {
+                        Id = result.usuario.id,
                         Correo = result.usuario.correo,
                         Rol = result.usuario.rol,
                         Nombre = result.usuario.nombre
@@ -101,6 +105,7 @@ namespace Frontend.Services
                 {
                     UsuarioActual = new Usuario
                     {
+                        Id = result.usuario.id,
                         Correo = result.usuario.correo,
                         Rol = result.usuario.rol,
                         Nombre = result.usuario.nombre
@@ -121,6 +126,7 @@ namespace Frontend.Services
         public async Task CerrarSesion()
         {
             UsuarioActual = null;
+            await _js.InvokeVoidAsync("localStorage.removeItem", "rutard_id");
             await _js.InvokeVoidAsync("localStorage.removeItem", "rutard_correo");
             await _js.InvokeVoidAsync("localStorage.removeItem", "rutard_rol");
             await _js.InvokeVoidAsync("localStorage.removeItem", "rutard_nombre");
@@ -134,6 +140,7 @@ namespace Frontend.Services
         {
             try
             {
+                await _js.InvokeVoidAsync("localStorage.setItem", "rutard_id", UsuarioActual!.Id.ToString());
                 await _js.InvokeVoidAsync("localStorage.setItem", "rutard_correo", UsuarioActual!.Correo);
                 await _js.InvokeVoidAsync("localStorage.setItem", "rutard_rol", UsuarioActual!.Rol);
                 await _js.InvokeVoidAsync("localStorage.setItem", "rutard_nombre", UsuarioActual!.Nombre);

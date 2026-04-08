@@ -1,6 +1,7 @@
 ﻿@using Frontend.Services
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 @implements IDisposable
 
 <div class="navbar-wrapper">
@@ -34,6 +35,16 @@
                 <NavLink href="Eventos-actividades" @onclick="CerrarMenu">Eventos y Actividades</NavLink>
                 <NavLink href="Turismo-cultural" @onclick="CerrarMenu">Turismo Cultural</NavLink>
                 <NavLink href="Turismo-ecologico" @onclick="CerrarMenu">Turismo Ecológico</NavLink>
+
+                <!-- Mis Reservas con badge -->
+                <NavLink href="MisReservas" @onclick="CerrarMenu" class="nav-mis-reservas">
+                    <span>Mis Reservas</span>
+                    @if (tieneReservaActiva)
+                    {
+                        <span class="reserva-activa-badge">🏠</span>
+                    }
+                </NavLink>
+
                 @if (AuthService.EsAdmin)
                 {
                     <NavLink href="Configuracion" @onclick="CerrarMenu">Configuración</NavLink>
@@ -51,13 +62,28 @@
 
 @code {
     private bool menuAbierto = false;
+    private bool tieneReservaActiva = false;
 
     private void ToggleMenu() => menuAbierto = !menuAbierto;
     private void CerrarMenu() => menuAbierto = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         AuthService.OnCambio += StateHasChanged;
+        await VerificarReservaActiva();
+    }
+
+    private async Task VerificarReservaActiva()
+    {
+        try
+        {
+            var tieneReserva = await JS.InvokeAsync<string>("localStorage.getItem", "tieneReservaActiva");
+            tieneReservaActiva = tieneReserva == "true";
+        }
+        catch
+        {
+            tieneReservaActiva = false;
+        }
     }
 
     public void Dispose()
@@ -68,6 +94,15 @@
     private async Task CerrarSesion()
     {
         await AuthService.CerrarSesion();
+
+        // Limpiar localStorage de reservas al cerrar sesión
+        try
+        {
+            await JS.InvokeVoidAsync("localStorage.removeItem", "tieneReservaActiva");
+            await JS.InvokeVoidAsync("localStorage.removeItem", "ultimaReservaId");
+        }
+        catch { }
+
         Navigation.NavigateTo("/Login");
     }
 }

@@ -1,13 +1,40 @@
 @page "/Reservar"
 @using Frontend.Models
+@using Frontend.Services
 @inject Frontend.Services.HotelService HotelService
+@inject Frontend.Services.ReservaService ReservaService
+@inject Frontend.Services.AuthService AuthService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+
+@if (mostrarAdvertenciaSolapamiento)
+{
+    <div class="modal-overlay">
+        <div class="modal-content modal-advertencia">
+            <div class="modal-cabecera">
+                <h2>⚠️ Advertencia de Reserva Existente</h2>
+            </div>
+            <div class="modal-cuerpo">
+                <p>@mensajeAdvertenciaSolapamiento</p>
+                <p class="advertencia-nota">Esta reserva puede ser para un tercero o diferentes fechas.</p>
+            </div>
+            <div class="modal-pie">
+                <button class="btn-modal-cancelar" @onclick="CancelarReservaPorSolapamiento">Cancelar</button>
+                <button class="btn-modal-confirmar" @onclick="ContinuarReservaConSolapamiento">Continuar de todos modos</button>
+            </div>
+        </div>
+    </div>
+}
 
 <PageTitle>Reservar - RutaRD</PageTitle>
 
 <div class="reservar-page">
     <div class="reservar-header">
+        <div class="reservar-header-nav">
+            <button class="btn-volver-atras" @onclick="VolverAtras">
+                ← Volver a Hoteles
+            </button>
+        </div>
         <h1>Completa tu Reserva</h1>
         <p>Estás a un paso de tu próxima aventura en Puerto Plata</p>
     </div>
@@ -189,35 +216,100 @@
                                         }
                 else
                                         {
-                                            <div class="form-grupo">
-                                                <label>Nombre completo *</label>
-                                                <input type="text" @bind="nombre" placeholder="Ej: María González"
-                                                       class="@(mostrarErrores && string.IsNullOrWhiteSpace(nombre) ? "input-error" : "")" />
-                                                @if (mostrarErrores && string.IsNullOrWhiteSpace(nombre))
-                                                {
-                                                    <span class="error-msg">El nombre es requerido</span>
-                                                }
+                                            <!-- Toggle: Datos propios vs Tercero -->
+                                            <div class="datos-tipo-selector">
+                                                <label class="datos-titulo">¿A nombre de quién es la reserva?</label>
+                                                <div class="datos-tipo-toggle">
+                                                    <button class="tipo-btn @(tipoReserva == "propio" ? "activo" : "")"
+                                                            @onclick="@(() => CambiarTipoReserva("propio"))">
+                                                        <span class="tipo-icon">👤</span>
+                                                        <span class="tipo-texto">Mis Datos</span>
+                                                    </button>
+                                                    <button class="tipo-btn @(tipoReserva == "tercero" ? "activo" : "")"
+                                                            @onclick="@(() => CambiarTipoReserva("tercero"))">
+                                                        <span class="tipo-icon">👥</span>
+                                                        <span class="tipo-texto">Tercero</span>
+                                                    </button>
+                                                </div>
                                             </div>
 
-                                            <div class="form-grupo">
-                                                <label>Correo electrónico *</label>
-                                                <input type="email" @bind="correo" placeholder="Ej: maria@gmail.com"
-                                                       class="@(mostrarErrores && !CorreoValido ? "input-error" : "")" />
-                                                @if (mostrarErrores && !CorreoValido)
-                                                {
-                                                    <span class="error-msg">Ingresa un correo válido</span>
-                                                }
-                                            </div>
+                                            @if (tipoReserva == "propio" && !editarDatosPropios)
+                                            {
+                                                <!-- Vista previa de datos propios -->
+                                                <div class="datos-propios-preview">
+                                                    <div class="datos-preview-header">
+                                                        <h3>📋 Tus Datos</h3>
+                                                        <button class="btn-editar-datos" @onclick="() => editarDatosPropios = true">
+                                                            ✏️ Modificar
+                                                        </button>
+                                                    </div>
+                                                    <div class="datos-preview-content">
+                                                        <div class="dato-preview-item">
+                                                            <span class="dato-label">Nombre:</span>
+                                                            <span class="dato-valor">@nombre</span>
+                                                        </div>
+                                                        <div class="dato-preview-item">
+                                                            <span class="dato-label">Correo:</span>
+                                                            <span class="dato-valor">@correo</span>
+                                                        </div>
+                                                        <div class="dato-preview-item">
+                                                            <span class="dato-label">Teléfono:</span>
+                                                            <span class="dato-valor">@(string.IsNullOrEmpty(telefono) ? "No especificado" : telefono)</span>
+                                                        </div>
+                                                    </div>
+                                                    @if (string.IsNullOrEmpty(telefono))
+                                                    {
+                                                        <div class="datos-warning">
+                                                            ⚠️ Te recomendamos agregar tu teléfono para contacto urgente
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
 
-                                            <div class="form-grupo">
-                                                <label>Teléfono *</label>
-                                                <input type="tel" @bind="telefono" placeholder="Ej: 809-555-1234"
-                                                       class="@(mostrarErrores && string.IsNullOrWhiteSpace(telefono) ? "input-error" : "")" />
-                                                @if (mostrarErrores && string.IsNullOrWhiteSpace(telefono))
+                                            @if (tipoReserva == "tercero" || editarDatosPropios)
+                                            {
+                                                <div class="form-grupo">
+                                                    <label>Nombre completo *</label>
+                                                    <input type="text" @bind="nombre" placeholder="Ej: María González"
+                                                           class="@(mostrarErrores && string.IsNullOrWhiteSpace(nombre) ? "input-error" : "")" />
+                                                    @if (mostrarErrores && string.IsNullOrWhiteSpace(nombre))
+                                                    {
+                                                        <span class="error-msg">El nombre es requerido</span>
+                                                    }
+                                                </div>
+
+                                                <div class="form-grupo">
+                                                    <label>Correo electrónico *</label>
+                                                    <input type="email" @bind="correo" placeholder="Ej: maria@gmail.com"
+                                                           class="@(mostrarErrores && !CorreoValido ? "input-error" : "")" />
+                                                    @if (mostrarErrores && !CorreoValido)
+                                                    {
+                                                        <span class="error-msg">Ingresa un correo válido</span>
+                                                    }
+                                                </div>
+
+                                                <div class="form-grupo">
+                                                    <label>Teléfono *</label>
+                                                    <input type="tel" @bind="telefono" placeholder="Ej: 809-555-1234"
+                                                           class="@(mostrarErrores && string.IsNullOrWhiteSpace(telefono) ? "input-error" : "")" />
+                                                    @if (mostrarErrores && string.IsNullOrWhiteSpace(telefono))
+                                                    {
+                                                        <span class="error-msg">El teléfono es requerido</span>
+                                                    }
+                                                </div>
+
+                                                @if (tipoReserva == "propio" && editarDatosPropios)
                                                 {
-                                                    <span class="error-msg">El teléfono es requerido</span>
+                                                    <div class="form-actions">
+                                                        <button class="btn-cancelar-edicion" @onclick="() => editarDatosPropios = false">
+                                                            Cancelar
+                                                        </button>
+                                                        <button class="btn-aceptar-cambios" @onclick="AceptarCambiosDatosPropios">
+                                                            ✓ Usar estos datos
+                                                        </button>
+                                                    </div>
                                                 }
-                                            </div>
+                                            }
 
                                             <div class="form-grupo">
                                                 <label>Solicitudes especiales</label>
@@ -227,6 +319,11 @@
                                             <button class="btn-reservar" @onclick="EnviarReserva">
                                                 Confirmar Reserva
                                             </button>
+
+                                            @if (!string.IsNullOrEmpty(errorMsg))
+                                            {
+                                                <div class="error-banner">@errorMsg</div>
+                                            }
                                         }
                                     </div>
 
@@ -248,15 +345,29 @@
     private string correo = "";
     private string telefono = "";
     private string solicitudes = "";
+    private string errorMsg = "";
     private bool mostrarErrores = false;
     private bool reservaExitosa = false;
     private string numeroFactura = "";
+    private List<Reserva> reservasUsuario = new();
+
+    // Variables para gestión de tipo de reserva
+    private string tipoReserva = "propio"; // "propio" o "tercero"
+    private bool editarDatosPropios = false;
+
+    // Variables para advertencia de solapamiento
+    private bool mostrarAdvertenciaSolapamiento = false;
+    private string mensajeAdvertenciaSolapamiento = "";
+    private Reserva? reservaSolapada = null;
+    private string nombreOriginal = "";
+    private string correoOriginal = "";
+    private string telefonoOriginal = "";
 
     private bool CorreoValido => !string.IsNullOrWhiteSpace(correo) && correo.Contains("@") && correo.Contains(".");
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        hotel = HotelService.GetHotel(HotelId);
+        hotel = await HotelService.GetHotel(HotelId);
         if (hotel != null)
         {
             reserva = new Reserva
@@ -270,20 +381,193 @@
                 Habitaciones = Habitaciones,
                 PrecioNoche = hotel.PrecioNoche
             };
+
+            // Calcular Noches y TotalEstimado
+            reserva.Noches = reserva.NochesCalculadas;
+            reserva.TotalEstimado = reserva.TotalCalculado;
+
             numeroFactura = $"RD-{DateTime.Now:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
+        }
+
+        // Pre-poblar datos del usuario si está autenticado
+        var usuario = AuthService.UsuarioActual;
+        if (usuario != null)
+        {
+            nombre = usuario.Nombre;
+            correo = usuario.Correo;
+            // Teléfono puede estar vacío, el usuario puede agregarlo después
+
+            // Guardar valores originales para poder restaurar
+            nombreOriginal = nombre;
+            correoOriginal = correo;
+            telefonoOriginal = telefono;
+
+            // Cargar reservas del usuario para verificar solapamientos
+            await CargarReservasUsuario(usuario.Id);
         }
     }
 
-    private void EnviarReserva()
+    private void CambiarTipoReserva(string tipo)
+    {
+        tipoReserva = tipo;
+
+        if (tipo == "propio")
+        {
+            // Restaurar datos originales del usuario
+            var usuario = AuthService.UsuarioActual;
+            if (usuario != null)
+            {
+                nombre = nombreOriginal;
+                correo = correoOriginal;
+                telefono = telefonoOriginal;
+                editarDatosPropios = false;
+            }
+        }
+        else
+        {
+            // Limpiar datos para tercero
+            nombre = "";
+            correo = "";
+            telefono = "";
+        }
+    }
+
+    private void AceptarCambiosDatosPropios()
+    {
+        // Guardar los nuevos valores como originales
+        nombreOriginal = nombre;
+        correoOriginal = correo;
+        telefonoOriginal = telefono;
+
+        editarDatosPropios = false;
+    }
+
+    private async Task EnviarReserva()
     {
         mostrarErrores = true;
         if (string.IsNullOrWhiteSpace(nombre) || !CorreoValido || string.IsNullOrWhiteSpace(telefono))
             return;
-        reservaExitosa = true;
+
+        // Obtener usuario actual
+        var usuario = AuthService.UsuarioActual;
+        if (usuario == null)
+        {
+            errorMsg = "Debes iniciar sesión para realizar una reserva.";
+            return;
+        }
+
+        // Verificar si hay reservas solapadas
+        var reservaSolapadaLocal = VerificarSolapamientoFechas();
+        if (reservaSolapadaLocal != null)
+        {
+            reservaSolapada = reservaSolapadaLocal;
+            mensajeAdvertenciaSolapamiento = $"Ya tienes una reserva activa en {hotel?.Nombre}:\n\n" +
+                                              $"• Check-in: {reservaSolapada.FechaEntrada:dd/MM/yyyy}\n" +
+                                              $"• Check-out: {reservaSolapada.FechaSalida:dd/MM/yyyy}\n" +
+                                              $"• Estado: {reservaSolapada.Estado}\n\n" +
+                                              "¿Deseas continuar con la nueva reserva?";
+            mostrarAdvertenciaSolapamiento = true;
+            return;
+        }
+
+        // Crear la reserva con todos los datos
+        await ProcesarReserva(usuario);
+    }
+
+    private async Task CargarReservasUsuario(int usuarioId)
+    {
+        var (reservas, error) = await ReservaService.GetReservasPorUsuarioAsync(usuarioId);
+        if (error == null && reservas != null)
+        {
+            reservasUsuario = reservas
+                .Where(r => r.Estado != "Cancelada" && r.FechaSalida >= DateTime.Today)
+                .ToList();
+        }
+    }
+
+    private Reserva? VerificarSolapamientoFechas()
+    {
+        return reservasUsuario.FirstOrDefault(r =>
+            r.HotelId == HotelId &&
+            !(reserva.FechaSalida <= r.FechaEntrada || reserva.FechaEntrada >= r.FechaSalida));
+    }
+
+    private void CancelarReservaPorSolapamiento()
+    {
+        mostrarAdvertenciaSolapamiento = false;
+        reservaSolapada = null;
+    }
+
+    private async Task ContinuarReservaConSolapamiento()
+    {
+        mostrarAdvertenciaSolapamiento = false;
+        var usuario = AuthService.UsuarioActual;
+        if (usuario != null)
+        {
+            await ProcesarReserva(usuario);
+        }
+    }
+
+    private async Task ProcesarReserva(Usuario usuario)
+    {
+        // Crear la reserva con todos los datos
+        var nuevaReserva = new Reserva
+        {
+            UsuarioId = usuario.Id,
+            HotelId = HotelId,
+            NombreHotel = hotel?.Nombre ?? "",
+            NombreCliente = nombre,
+            Correo = correo,
+            Telefono = telefono,
+            FechaEntrada = reserva.FechaEntrada,
+            FechaSalida = reserva.FechaSalida,
+            Noches = reserva.NochesCalculadas,
+            Adultos = reserva.Adultos,
+            Ninos = reserva.Ninos,
+            Habitaciones = reserva.Habitaciones,
+            PrecioNoche = reserva.PrecioNoche,
+            TotalEstimado = reserva.TotalCalculado,
+            SolicitudesEspeciales = solicitudes,
+            Estado = "Pendiente"
+        };
+
+        // Calcular ITBIS y total con ITBIS
+        nuevaReserva.ITBIS = nuevaReserva.TotalEstimado * 0.18m;
+        nuevaReserva.TotalConITBIS = nuevaReserva.TotalEstimado + nuevaReserva.ITBIS;
+
+        // Guardar en la base de datos
+        var (reservaCreada, error) = await ReservaService.CreateReservaAsync(nuevaReserva);
+
+        if (error != null)
+        {
+            errorMsg = $"Error al procesar la reserva: {error}";
+            return;
+        }
+
+        if (reservaCreada != null)
+        {
+            // Actualizar la reserva actual con los datos de la BD
+            reserva = reservaCreada;
+            numeroFactura = reservaCreada.NumeroFactura ?? $"RD-{DateTime.UtcNow:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
+            reservaExitosa = true;
+
+            // Guardar información de la reserva activa en localStorage
+            await JS.InvokeVoidAsync("localStorage.setItem", "ultimaReservaId", reserva.Id.ToString());
+            await JS.InvokeVoidAsync("localStorage.setItem", "tieneReservaActiva", "true");
+        }
+        else
+        {
+            errorMsg = "Error al procesar la reserva. Por favor intenta nuevamente.";
+        }
     }
 
     private async Task Imprimir()
     {
         await JS.InvokeVoidAsync("window.print");
+    }
+
+    private void VolverAtras()
+    {
+        Navigation.NavigateTo("/Hoteles");
     }
 }

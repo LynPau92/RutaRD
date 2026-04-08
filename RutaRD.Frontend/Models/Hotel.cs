@@ -1,5 +1,3 @@
-using Frontend.Models;
-
 namespace Frontend.Models
 {
     public class Hotel
@@ -15,7 +13,20 @@ namespace Frontend.Models
         public string Telefono { get; set; } = "";
         public string SitioWeb { get; set; } = "";
         public string Tipo { get; set; } = "";
-        public List<string> Servicios { get; set; } = new();
-        public List<Resena> Resenas { get; set; } = new();
+
+        // Propiedades de navegación del backend
+        public List<HotelServicio>? HotelServicios { get; set; }
+        public List<Resena>? ResenasBackend { get; set; }
+
+        // Propiedades calculadas para el frontend
+        public List<string> Servicios => HotelServicios?.Select(hs => hs.Servicio).ToList() ?? new List<string>();
+        public List<Resena> Resenas => ResenasBackend ?? new List<Resena>();
+    }
+
+    public class HotelServicio
+    {
+        public int Id { get; set; }
+        public int HotelId { get; set; }
+        public string Servicio { get; set; } = "";
     }
 }

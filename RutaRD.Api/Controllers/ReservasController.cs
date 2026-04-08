@@ -41,7 +41,7 @@ namespace RutaRD.Api.Controllers
 
         // GET: api/Reservas/usuario/5
         [HttpGet("usuario/{usuarioId}")]
-        public async Task<ActionResult<IEnumerable<Reserva>>> GetReservasPorUsuario(int usuarioId)
+        public async Task<ActionResult<IEnumerable<object>>> GetReservasPorUsuario(int usuarioId)
         {
             try
             {
@@ -49,6 +49,41 @@ namespace RutaRD.Api.Controllers
                     .Include(r => r.Hotel)
                     .Where(r => r.UsuarioId == usuarioId)
                     .OrderByDescending(r => r.FechaReserva)
+                    .Select(r => new
+                    {
+                        r.Id,
+                        r.UsuarioId,
+                        r.HotelId,
+                        NombreHotel = r.Hotel != null ? r.Hotel.Nombre : "",
+                        r.NombreCliente,
+                        r.Correo,
+                        r.Telefono,
+                        r.FechaEntrada,
+                        r.FechaSalida,
+                        r.Noches,
+                        r.Adultos,
+                        r.Ninos,
+                        r.Habitaciones,
+                        r.PrecioNoche,
+                        r.TotalEstimado,
+                        r.ITBIS,
+                        r.TotalConITBIS,
+                        r.SolicitudesEspeciales,
+                        r.NumeroFactura,
+                        r.FechaReserva,
+                        r.Estado,
+                        Hotel = r.Hotel != null ? new
+                        {
+                            r.Hotel.Id,
+                            r.Hotel.Nombre,
+                            r.Hotel.Imagen,
+                            r.Hotel.Ubicacion,
+                            r.Hotel.Estrellas,
+                            r.Hotel.PrecioNoche,
+                            r.Hotel.Telefono,
+                            r.Hotel.SitioWeb
+                        } : null
+                    })
                     .ToListAsync();
 
                 return Ok(reservas);
@@ -62,14 +97,56 @@ namespace RutaRD.Api.Controllers
 
         // GET: api/Reservas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reserva>> GetReserva(int id)
+        public async Task<ActionResult<object>> GetReserva(int id)
         {
             try
             {
                 var reserva = await _context.Reservas
                     .Include(r => r.Usuario)
                     .Include(r => r.Hotel)
-                    .FirstOrDefaultAsync(r => r.Id == id);
+                    .Where(r => r.Id == id)
+                    .Select(r => new
+                    {
+                        r.Id,
+                        r.UsuarioId,
+                        r.HotelId,
+                        NombreHotel = r.Hotel != null ? r.Hotel.Nombre : "",
+                        r.NombreCliente,
+                        r.Correo,
+                        r.Telefono,
+                        r.FechaEntrada,
+                        r.FechaSalida,
+                        r.Noches,
+                        r.Adultos,
+                        r.Ninos,
+                        r.Habitaciones,
+                        r.PrecioNoche,
+                        r.TotalEstimado,
+                        r.ITBIS,
+                        r.TotalConITBIS,
+                        r.SolicitudesEspeciales,
+                        r.NumeroFactura,
+                        r.FechaReserva,
+                        r.Estado,
+                        Hotel = r.Hotel != null ? new
+                        {
+                            r.Hotel.Id,
+                            r.Hotel.Nombre,
+                            r.Hotel.Imagen,
+                            r.Hotel.Ubicacion,
+                            r.Hotel.Estrellas,
+                            r.Hotel.PrecioNoche,
+                            r.Hotel.Telefono,
+                            r.Hotel.SitioWeb
+                        } : null,
+                        Usuario = r.Usuario != null ? new
+                        {
+                            r.Usuario.Id,
+                            r.Usuario.Nombre,
+                            r.Usuario.Correo
+                        } : null
+                    })
+                    .FirstOrDefaultAsync();
 
                 if (reserva == null)
                 {
@@ -103,6 +180,16 @@ namespace RutaRD.Api.Controllers
                     return BadRequest(new { message = $"Hotel con ID {reserva.HotelId} no encontrado" });
                 }
 
+                // Asegurar que las fechas estén en UTC
+                if (reserva.FechaEntrada.Kind == DateTimeKind.Unspecified)
+                {
+                    reserva.FechaEntrada = DateTime.SpecifyKind(reserva.FechaEntrada, DateTimeKind.Utc);
+                }
+                if (reserva.FechaSalida.Kind == DateTimeKind.Unspecified)
+                {
+                    reserva.FechaSalida = DateTime.SpecifyKind(reserva.FechaSalida, DateTimeKind.Utc);
+                }
+
                 // Calcular noches
                 reserva.Noches = (reserva.FechaSalida - reserva.FechaEntrada).Days;
 
@@ -117,9 +204,9 @@ namespace RutaRD.Api.Controllers
                 reserva.TotalConITBIS = reserva.TotalEstimado + reserva.ITBIS;
 
                 // Generar número de factura
-                reserva.NumeroFactura = $"RD-{DateTime.Now:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
+                reserva.NumeroFactura = $"RD-{DateTime.UtcNow:yyyyMMdd}-{Random.Shared.Next(1000, 9999)}";
 
-                reserva.FechaReserva = DateTime.Now;
+                reserva.FechaReserva = DateTime.UtcNow;
                 reserva.Estado = "Pendiente";
 
                 _context.Reservas.Add(reserva);

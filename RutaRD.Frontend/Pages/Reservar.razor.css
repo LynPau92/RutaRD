@@ -9,6 +9,35 @@
     margin-bottom: 2.5rem;
 }
 
+.reservar-header-nav {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+.btn-volver-atras {
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #094255;
+    background: white;
+    border: 2px solid #094255;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-volver-atras:hover {
+    background: linear-gradient(135deg, #094255 0%, #42abc3 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateX(-3px);
+}
+
 .reservar-header h1 {
     font-family: 'Dancing Script', cursive;
     font-size: 3rem;
@@ -482,4 +511,312 @@
 
 .sin-hotel p {
     margin-bottom: 1rem;
+}
+
+/* Error Banner */
+.error-banner {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 1px solid #f5c6cb;
+    font-family: 'Baloo 2', cursive;
+    text-align: center;
+}
+
+/* Selector de Tipo de Reserva */
+.datos-reserva-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.datos-tipo-selector {
+    margin-bottom: 1.5rem;
+}
+
+.datos-titulo {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #094255;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.datos-tipo-toggle {
+    display: flex;
+    gap: 1rem;
+    background: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 12px;
+}
+
+.tipo-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.tipo-btn:hover {
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateY(-2px);
+}
+
+.tipo-btn.activo {
+    border-color: #3498db;
+    background: #3498db;
+    color: white;
+}
+
+.tipo-icon {
+    font-size: 1.3rem;
+}
+
+.tipo-texto {
+    font-weight: 600;
+}
+
+/* Vista Previa de Datos Propios */
+.datos-propios-preview {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.datos-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.datos-preview-header h3 {
+    margin: 0;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.3rem;
+    color: #094255;
+}
+
+.btn-editar-datos {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-editar-datos:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.datos-preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dato-preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.dato-label {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.dato-valor {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 500;
+    color: #094255;
+    font-size: 1rem;
+}
+
+.datos-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Botones de Acción */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.btn-cancelar-edicion, .btn-aceptar-cambios {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cancelar-edicion {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-cancelar-edicion:hover {
+    background: #7f8c8d;
+}
+
+.btn-aceptar-cambios {
+    background: #27ae60;
+    color: white;
+}
+
+.btn-aceptar-cambios:hover {
+    background: #229954;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .datos-tipo-toggle {
+        flex-direction: column;
+    }
+
+    .datos-preview-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .dato-preview-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+/* Modal de Advertencia de Solapamiento */
+.modal-advertencia {
+    max-width: 500px;
+    margin: 2rem auto;
+    border: 2px solid #ffc107;
+    box-shadow: 0 8px 30px rgba(255, 193, 7, 0.3);
+}
+
+.modal-advertencia .modal-cabecera {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-advertencia .modal-cabecera h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.modal-advertencia .modal-cuerpo {
+    padding: 1.5rem;
+}
+
+.modal-advertencia .modal-cuerpo p {
+    font-family: 'Baloo 2', cursive;
+    color: #555;
+    line-height: 1.6;
+    white-space: pre-line;
+    margin-bottom: 1rem;
+}
+
+.modal-advertencia .advertencia-nota {
+    font-style: italic;
+    color: #888;
+    font-size: 0.9rem;
+    background: rgba(255, 193, 7, 0.1);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid #ffc107;
+}
+
+.modal-advertencia .modal-pie {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 193, 7, 0.05);
+    border-radius: 0 0 8px 8px;
+}
+
+.modal-advertencia .btn-modal-cancelar {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #dc3545;
+    background: white;
+    color: #dc3545;
+    border-radius: 50px;
+    font-family: 'Baloo 2', cursive;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-advertencia .btn-modal-cancelar:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-advertencia .btn-modal-confirmar {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #28a745;
+    background: white;
+    color: #28a745;
+    border-radius: 50px;
+    font-family: 'Baloo 2', cursive;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-advertencia .btn-modal-confirmar:hover {
+    background: #28a745;
+    color: white;
 }

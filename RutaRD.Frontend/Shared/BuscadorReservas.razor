@@ -99,9 +99,9 @@
     private bool personasAbierto = false;
     private string errorMsg = "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        hoteles = HotelService.GetHoteles();
+        hoteles = await HotelService.GetHoteles();
     }
 
     private void TogglePersonas() => personasAbierto = !personasAbierto;

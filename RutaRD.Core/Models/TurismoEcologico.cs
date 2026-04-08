@@ -43,7 +43,7 @@ namespace RutaRD.Core.Models
         [MaxLength(100)]
         public string? Horario { get; set; } = "";
 
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
         // Propiedades de navegación
         public virtual ICollection<Resena> Resenas { get; set; } = new List<Resena>();

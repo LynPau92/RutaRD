@@ -69,6 +69,37 @@
     font-weight: 600;
 }
 
+/* ── Badge de reserva activa ── */
+.navbar-links ::deep .nav-mis-reservas {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.navbar-links ::deep .reserva-activa-badge {
+    background: #27ae60;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    animation: pulse 2s infinite;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
 /* ── Hamburger ── */
 .hamburger {
     display: none;

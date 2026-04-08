@@ -20,7 +20,7 @@ namespace RutaRD.Api.Controllers
 
         // GET: api/Hoteles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHoteles()
+        public async Task<ActionResult<IEnumerable<object>>> GetHoteles()
         {
             try
             {
@@ -28,6 +28,34 @@ namespace RutaRD.Api.Controllers
                     .Include(h => h.HotelServicios)
                     .Include(h => h.Resenas)
                     .OrderBy(h => h.Nombre)
+                    .Select(h => new
+                    {
+                        h.Id,
+                        h.Nombre,
+                        h.Descripcion,
+                        h.Imagen,
+                        h.Ubicacion,
+                        h.GoogleMapsUrl,
+                        h.Estrellas,
+                        h.PrecioNoche,
+                        h.Telefono,
+                        h.SitioWeb,
+                        h.Tipo,
+                        HotelServicios = h.HotelServicios.Select(hs => new
+                        {
+                            hs.Id,
+                            hs.HotelId,
+                            hs.Servicio
+                        }).ToList(),
+                        Resenas = h.Resenas.Select(r => new
+                        {
+                            r.Id,
+                            r.NombreVisitante,
+                            r.Comentario,
+                            r.Calificacion,
+                            r.Fecha
+                        }).ToList()
+                    })
                     .ToListAsync();
 
                 return Ok(hoteles);
@@ -41,14 +69,43 @@ namespace RutaRD.Api.Controllers
 
         // GET: api/Hoteles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotel(int id)
+        public async Task<ActionResult<object>> GetHotel(int id)
         {
             try
             {
                 var hotel = await _context.Hoteles
                     .Include(h => h.HotelServicios)
                     .Include(h => h.Resenas)
-                    .FirstOrDefaultAsync(h => h.Id == id);
+                    .Where(h => h.Id == id)
+                    .Select(h => new
+                    {
+                        h.Id,
+                        h.Nombre,
+                        h.Descripcion,
+                        h.Imagen,
+                        h.Ubicacion,
+                        h.GoogleMapsUrl,
+                        h.Estrellas,
+                        h.PrecioNoche,
+                        h.Telefono,
+                        h.SitioWeb,
+                        h.Tipo,
+                        HotelServicios = h.HotelServicios.Select(hs => new
+                        {
+                            hs.Id,
+                            hs.HotelId,
+                            hs.Servicio
+                        }).ToList(),
+                        Resenas = h.Resenas.Select(r => new
+                        {
+                            r.Id,
+                            r.NombreVisitante,
+                            r.Comentario,
+                            r.Calificacion,
+                            r.Fecha
+                        }).ToList()
+                    })
+                    .FirstOrDefaultAsync();
 
                 if (hotel == null)
                 {

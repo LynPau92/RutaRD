@@ -34,8 +34,10 @@
     </div>
     
     <!-- Buscador General para reservas de restaurantes -->
+    @*
     <BuscadorGeneral Categoria="Restaurante"
     Opciones="restaurantes.Select(r => r.Nombre).ToList()" />
+    *@
     
     <div class="restaurantes-grid">
         @foreach (var restaurante in RestaurantesFiltrados)

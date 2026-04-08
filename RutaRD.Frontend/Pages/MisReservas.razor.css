@@ -1,0 +1,431 @@
+.mis-reservas-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.mis-reservas-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.mis-reservas-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.mis-reservas-header p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Estados de carga y vacío */
+.no-login, .sin-reservas, .cargando {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.no-login-icon, .sin-reservas-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.no-login h2, .sin-reservas h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.no-login p, .sin-reservas p {
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}
+
+.btn-iniciar-sesion, .btn-explorar-hoteles {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-iniciar-sesion:hover, .btn-explorar-hoteles:hover {
+    background: #2980b9;
+}
+
+/* Pestañas */
+.reservas-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.tab-btn {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #7f8c8d;
+    transition: all 0.3s;
+}
+
+.tab-btn.activa {
+    color: #3498db;
+    border-bottom-color: #3498db;
+}
+
+.tab-btn:hover {
+    color: #3498db;
+}
+
+/* Lista de reservas */
+.reservas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.reserva-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.reserva-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.reserva-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.reserva-hotel-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.reserva-hotel-img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.reserva-hotel-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.reserva-fecha {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.reserva-estado-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.reserva-estado-badge.pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.reserva-estado-badge.confirmada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.reserva-estado-badge.cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.reserva-detalles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reserva-detalle-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detalle-label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-bottom: 0.25rem;
+}
+
+.detalle-valor {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.detalle-valor.total {
+    color: #27ae60;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.reserva-factura-info {
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.factura-numero {
+    font-size: 0.9rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.reserva-acciones {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-ver-detalle, .btn-cancelar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-ver-detalle {
+    background: #3498db;
+    color: #fff;
+}
+
+.btn-ver-detalle:hover {
+    background: #2980b9;
+}
+
+.btn-cancelar {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-cancelar:hover {
+    background: #c0392b;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-cancelar {
+    max-width: 400px;
+}
+
+.modal-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.modal-cabecera h2 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.modal-cerrar {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #7f8c8d;
+    line-height: 1;
+}
+
+.modal-cuerpo {
+    padding: 1.5rem;
+}
+
+.detalle-resumen {
+    margin-bottom: 1.5rem;
+}
+
+.detalle-hotel {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.detalle-hotel img {
+    width: 100px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.detalle-seccion {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.detalle-seccion:last-child {
+    border-bottom: none;
+}
+
+.detalle-seccion h4 {
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+}
+
+.detalle-seccion p {
+    color: #495057;
+    margin: 0.5rem 0;
+}
+
+.estado-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.precio-fila {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.precio-fila:last-child {
+    border-bottom: none;
+}
+
+.precio-fila.total {
+    font-size: 1.1rem;
+    color: #27ae60;
+    font-weight: 600;
+    border-top: 2px solid #27ae60;
+}
+
+.cancelar-advertencia {
+    color: #e74c3c;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.modal-pie {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    border-top: 1px solid #ecf0f1;
+}
+
+.btn-modal-confirmar, .btn-modal-cancelar, .btn-modal-cerrar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-modal-confirmar {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-modal-confirmar:hover {
+    background: #c0392b;
+}
+
+.btn-modal-cancelar {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-modal-cerrar {
+    background: #95a5a6;
+    color: #fff;
+}
+
+.btn-modal-cerrar:hover {
+    background: #7f8c8d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mis-reservas-page {
+        padding: 1rem;
+    }
+
+    .reserva-cabecera {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .reserva-detalles {
+        grid-template-columns: 1fr;
+    }
+
+    .reserva-acciones {
+        flex-direction: column;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .detalle-hotel {
+        flex-direction: column;
+    }
+}

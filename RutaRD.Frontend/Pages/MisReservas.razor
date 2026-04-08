@@ -1,0 +1,387 @@
+@page "/MisReservas"
+@using Frontend.Models
+@using Frontend.Services
+@inject Frontend.Services.ReservaService ReservaService
+@inject Frontend.Services.AuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Mis Reservas - RutaRD</PageTitle>
+
+<div class="mis-reservas-page">
+    <div class="mis-reservas-header">
+        <h1>Mis Reservas</h1>
+        <p>Gestiona y consulta todas tus reservas de hoteles</p>
+    </div>
+
+    @if (usuario == null)
+    {
+        <div class="no-login">
+            <div class="no-login-icon">🔒</div>
+            <h2>Inicia sesión para ver tus reservas</h2>
+            <p>Debes tener una cuenta para ver y gestionar tus reservas.</p>
+            <a href="/Login" class="btn-iniciar-sesion">Iniciar Sesión</a>
+        </div>
+    }
+    else if (cargando)
+    {
+        <div class="cargando">
+            <p>Cargando tus reservas...</p>
+        </div>
+    }
+    else if (!reservas.Any())
+    {
+        <div class="sin-reservas">
+            <div class="sin-reservas-icon">📅</div>
+            <h2>Aún no tienes reservas</h2>
+            <p>Explora nuestros hoteles y realiza tu primera reserva.</p>
+            <a href="/Hoteles" class="btn-explorar-hoteles">Explorar Hoteles</a>
+        </div>
+    }
+    else
+    {
+        <div class="reservas-tabs">
+            <button class="tab-btn @(pestanaActiva == "activas" ? "activa" : "")" @onclick='() => pestanaActiva = "activas"'>
+                Reservas Activas (@reservasActivas.Count)
+            </button>
+            <button class="tab-btn @(pestanaActiva == "historial" ? "activa" : "")" @onclick='() => pestanaActiva = "historial"'>
+                Historial (@reservasHistorial.Count)
+            </button>
+        </div>
+
+        @if (pestanaActiva == "activas")
+        {
+            @if (!reservasActivas.Any())
+            {
+                <div class="sin-reservas-activas">
+                    <p>No tienes reservas activas en este momento.</p>
+                </div>
+            }
+            else
+            {
+                <div class="reservas-lista">
+                    @foreach (var reserva in reservasActivas)
+                    {
+                        <div class="reserva-card @(reserva.Estado.ToLower())">
+                            <div class="reserva-cabecera">
+                                <div class="reserva-hotel-info">
+                                    <img src="@(reserva.Hotel?.Imagen ?? "/images/placeholder-hotel.png")" alt="@reserva.NombreHotel" class="reserva-hotel-img" />
+                                    <div>
+                                        <h3>@reserva.NombreHotel</h3>
+                                        <p class="reserva-fecha">Reserva: @reserva.FechaReserva.ToString("dd/MM/yyyy")</p>
+                                    </div>
+                                </div>
+                                <div class="reserva-estado-badge @reserva.Estado.ToLower()">
+                                    @reserva.Estado
+                                </div>
+                            </div>
+
+                            <div class="reserva-detalles">
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Fecha Entrada:</span>
+                                    <span class="detalle-valor">@reserva.FechaEntrada.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Fecha Salida:</span>
+                                    <span class="detalle-valor">@reserva.FechaSalida.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Noches:</span>
+                                    <span class="detalle-valor">@reserva.Noches</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Huéspedes:</span>
+                                    <span class="detalle-valor">@reserva.Adultos adultos, @reserva.Ninos niños</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Habitaciones:</span>
+                                    <span class="detalle-valor">@reserva.Habitaciones</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Total:</span>
+                                    <span class="detalle-valor total">RD$ @reserva.TotalConITBIS.ToString("N2")</span>
+                                </div>
+                            </div>
+
+                            <div class="reserva-factura-info">
+                                <span class="factura-numero">Factura: @reserva.NumeroFactura</span>
+                            </div>
+
+                            <div class="reserva-acciones">
+                                <button class="btn-ver-detalle" @onclick="() => VerDetalle(reserva.Id)">Ver Detalle</button>
+                                @if (reserva.Estado != "Cancelada")
+                                {
+                                    <button class="btn-cancelar" @onclick="() => CancelarReserva(reserva.Id)">Cancelar Reserva</button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else // Historial
+        {
+            @if (!reservasHistorial.Any())
+            {
+                <div class="sin-historial">
+                    <p>No tienes reservas en el historial.</p>
+                </div>
+            }
+            else
+            {
+                <div class="reservas-lista">
+                    @foreach (var reserva in reservasHistorial)
+                    {
+                        <div class="reserva-card @(reserva.Estado.ToLower())">
+                            <div class="reserva-cabecera">
+                                <div class="reserva-hotel-info">
+                                    <img src="@(reserva.Hotel?.Imagen ?? "/images/placeholder-hotel.png")" alt="@reserva.NombreHotel" class="reserva-hotel-img" />
+                                    <div>
+                                        <h3>@reserva.NombreHotel</h3>
+                                        <p class="reserva-fecha">Reserva: @reserva.FechaReserva.ToString("dd/MM/yyyy")</p>
+                                    </div>
+                                </div>
+                                <div class="reserva-estado-badge @reserva.Estado.ToLower()">
+                                    @reserva.Estado
+                                </div>
+                            </div>
+
+                            <div class="reserva-detalles">
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Fecha Entrada:</span>
+                                    <span class="detalle-valor">@reserva.FechaEntrada.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Fecha Salida:</span>
+                                    <span class="detalle-valor">@reserva.FechaSalida.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="reserva-detalle-item">
+                                    <span class="detalle-label">Total:</span>
+                                    <span class="detalle-valor total">RD$ @reserva.TotalConITBIS.ToString("N2")</span>
+                                </div>
+                            </div>
+
+                            <div class="reserva-acciones">
+                                <button class="btn-ver-detalle" @onclick="() => VerDetalle(reserva.Id)">Ver Detalle</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    }
+
+    <!-- Modal de Detalle de Reserva -->
+    @if (mostrarModalDetalle && reservaSeleccionada != null)
+    {
+        <div class="modal-overlay" @onclick="CerrarModal">
+            <div class="modal-content" @onclick:stopPropagation>
+                <div class="modal-cabecera">
+                    <h2>Detalle de Reserva</h2>
+                    <button class="modal-cerrar" @onclick="CerrarModal">×</button>
+                </div>
+
+                <div class="modal-cuerpo">
+                    <div class="detalle-resumen">
+                        <div class="detalle-hotel">
+                            <img src="@(reservaSeleccionada.Hotel?.Imagen ?? "/images/placeholder-hotel.png")" alt="@reservaSeleccionada.NombreHotel" />
+                            <div>
+                                <h3>@reservaSeleccionada.NombreHotel</h3>
+                                <p>Factura: @reservaSeleccionada.NumeroFactura</p>
+                                <p>Estado: <span class="estado-badge @reservaSeleccionada.Estado.ToLower()">@reservaSeleccionada.Estado</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detalle-seccion">
+                        <h4>Información del Cliente</h4>
+                        <p><strong>Nombre:</strong> @reservaSeleccionada.NombreCliente</p>
+                        <p><strong>Correo:</strong> @reservaSeleccionada.Correo</p>
+                        <p><strong>Teléfono:</strong> @reservaSeleccionada.Telefono</p>
+                    </div>
+
+                    <div class="detalle-seccion">
+                        <h4>Datos de la Reserva</h4>
+                        <p><strong>Check-in:</strong> @reservaSeleccionada.FechaEntrada.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Check-out:</strong> @reservaSeleccionada.FechaSalida.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Noches:</strong> @reservaSeleccionada.Noches</p>
+                        <p><strong>Habitaciones:</strong> @reservaSeleccionada.Habitaciones</p>
+                        <p><strong>Adultos:</strong> @reservaSeleccionada.Adultos</p>
+                        <p><strong>Niños:</strong> @reservaSeleccionada.Ninos</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(reservaSeleccionada.SolicitudesEspeciales))
+                    {
+                        <div class="detalle-seccion">
+                            <h4>Solicitudes Especiales</h4>
+                            <p>@reservaSeleccionada.SolicitudesEspeciales</p>
+                        </div>
+                    }
+
+                    <div class="detalle-seccion">
+                        <h4>Desglose de Precios</h4>
+                        <div class="precio-fila">
+                            <span>Precio por noche:</span>
+                            <span>RD$ @reservaSeleccionada.PrecioNoche.ToString("N2")</span>
+                        </div>
+                        <div class="precio-fila">
+                            <span>Subtotal:</span>
+                            <span>RD$ @reservaSeleccionada.TotalEstimado.ToString("N2")</span>
+                        </div>
+                        <div class="precio-fila">
+                            <span>ITBIS (18%):</span>
+                            <span>RD$ @reservaSeleccionada.ITBIS.ToString("N2")</span>
+                        </div>
+                        <div class="precio-fila total">
+                            <span><strong>Total a Pagar:</strong></span>
+                            <span><strong>RD$ @reservaSeleccionada.TotalConITBIS.ToString("N2")</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-pie">
+                    @if (reservaSeleccionada.Estado != "Cancelada")
+                    {
+                        <button class="btn-modal-cancelar" @onclick="() => CancelarReserva(reservaSeleccionada.Id)">Cancelar Reserva</button>
+                    }
+                    <button class="btn-modal-cerrar" @onclick="CerrarModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Modal de Confirmación de Cancelación -->
+    @if (mostrarModalCancelar && reservaACancelar != null)
+    {
+        <div class="modal-overlay" @onclick="CerrarModalCancelar">
+            <div class="modal-content modal-cancelar" @onclick:stopPropagation>
+                <div class="modal-cabecera">
+                    <h2>Cancelar Reserva</h2>
+                    <button class="modal-cerrar" @onclick="CerrarModalCancelar">×</button>
+                </div>
+
+                <div class="modal-cuerpo">
+                    <p>¿Estás seguro que deseas cancelar tu reserva en <strong>@reservaACancelar.NombreHotel</strong>?</p>
+                    <p class="cancelar-advertencia">Esta acción no se puede deshacer.</p>
+                </div>
+
+                <div class="modal-pie">
+                    <button class="btn-modal-confirmar" @onclick="ConfirmarCancelacion">Sí, Cancelar</button>
+                    <button class="btn-modal-cerrar" @onclick="CerrarModalCancelar">No, Volver</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private Services.Usuario? usuario;
+    private List<Reserva> reservas = new();
+    private bool cargando = true;
+    private string pestanaActiva = "activas";
+
+    private List<Reserva> reservasActivas => reservas
+        .Where(r => r.Estado != "Cancelada" && r.FechaSalida >= DateTime.Today)
+        .OrderBy(r => r.FechaEntrada)
+        .ToList();
+
+    private List<Reserva> reservasHistorial => reservas
+        .Where(r => r.Estado == "Cancelada" || r.FechaSalida < DateTime.Today)
+        .OrderByDescending(r => r.FechaReserva)
+        .ToList();
+
+    // Modal variables
+    private bool mostrarModalDetalle = false;
+    private bool mostrarModalCancelar = false;
+    private Reserva? reservaSeleccionada;
+    private Reserva? reservaACancelar;
+
+    protected override async Task OnInitializedAsync()
+    {
+        usuario = AuthService.UsuarioActual;
+
+        if (usuario != null)
+        {
+            await CargarReservas();
+        }
+
+        cargando = false;
+    }
+
+    private async Task CargarReservas()
+    {
+        if (usuario == null) return;
+
+        var (reservasList, error) = await ReservaService.GetReservasPorUsuarioAsync(usuario.Id);
+
+        if (error != null)
+        {
+            // Console o log del error
+            Console.WriteLine($"Error: {error}");
+        }
+
+        reservas = reservasList ?? new List<Reserva>();
+        StateHasChanged();
+    }
+
+    private void VerDetalle(int reservaId)
+    {
+        reservaSeleccionada = reservas.FirstOrDefault(r => r.Id == reservaId);
+        if (reservaSeleccionada != null)
+        {
+            mostrarModalDetalle = true;
+        }
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalDetalle = false;
+        reservaSeleccionada = null;
+    }
+
+    private void CancelarReserva(int reservaId)
+    {
+        reservaACancelar = reservas.FirstOrDefault(r => r.Id == reservaId);
+        if (reservaACancelar != null)
+        {
+            mostrarModalCancelar = true;
+        }
+    }
+
+    private void CerrarModalCancelar()
+    {
+        mostrarModalCancelar = false;
+        reservaACancelar = null;
+    }
+
+    private async Task ConfirmarCancelacion()
+    {
+        if (reservaACancelar == null) return;
+
+        var exito = await ReservaService.CancelReservaAsync(reservaACancelar.Id);
+
+        if (exito)
+        {
+            await CargarReservas();
+
+            // Verificar si quedan reservas activas
+            if (usuario != null)
+            {
+                var reservasActivas = await ReservaService.GetReservasActivasAsync(usuario.Id);
+                if (!reservasActivas.Any())
+                {
+                    // Limpiar localStorage si no hay más reservas activas
+                    await JS.InvokeVoidAsync("localStorage.removeItem", "tieneReservaActiva");
+                    await JS.InvokeVoidAsync("localStorage.removeItem", "ultimaReservaId");
+                }
+            }
+
+            CerrarModalCancelar();
+        }
+        else
+        {
+            // Mostrar error
+            await JS.InvokeVoidAsync("alert", "Error al cancelar la reserva. Por favor intenta nuevamente.");
+        }
+    }
+}

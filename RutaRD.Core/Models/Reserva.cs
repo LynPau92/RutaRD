@@ -61,7 +61,7 @@ namespace RutaRD.Core.Models
         [MaxLength(30)]
         public string? NumeroFactura { get; set; } = "";
 
-        public DateTime FechaReserva { get; set; } = DateTime.Now;
+        public DateTime FechaReserva { get; set; } = DateTime.UtcNow;
 
         [Required]
         [MaxLength(20)]

@@ -97,8 +97,8 @@ else
     [Parameter] public int Id { get; set; }
     private Hotel? hotel;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        hotel = HotelService.GetHotel(Id);
+        hotel = await HotelService.GetHotel(Id);
     }
 }

@@ -87,11 +87,21 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     background: white;
+    position: relative;
+}
+
+.hotel-card.con-reserva-activa {
+    border: 2px solid #28a745;
+    box-shadow: 0 4px 20px rgba(40, 167, 69, 0.2);
 }
 
 .hotel-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 30px rgba(9,66,85,0.2);
+}
+
+.hotel-card.con-reserva-activa:hover {
+    box-shadow: 0 12px 30px rgba(40, 167, 69, 0.3);
 }
 
 .hotel-img-container {
@@ -123,6 +133,32 @@
     font-weight: 600;
     padding: 0.25rem 0.75rem;
     border-radius: 50px;
+    z-index: 2;
+}
+
+.reserva-activa-badge-hotel {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
+    }
+    50% {
+        box-shadow: 0 2px 12px rgba(40, 167, 69, 0.7);
+    }
 }
 
 .hotel-info {

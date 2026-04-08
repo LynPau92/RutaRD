@@ -18,7 +18,11 @@ namespace RutaRD.Core.Models
 
         public double Calificacion { get; set; }
 
-        public DateTime Fecha { get; set; } = DateTime.Now;
+        public DateTime Fecha { get; set; } = DateTime.UtcNow;
+
+        // Campo adicional para mostrar fecha formateada (ej: "Enero 2026")
+        [NotMapped]
+        public string FechaFormateada { get; set; } = "";
 
         // Sistema polimórfico
         public int CategoriaId { get; set; }

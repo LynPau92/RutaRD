@@ -14,5 +14,6 @@ builder.Services.AddScoped<TurismoEcologicoService>();
 builder.Services.AddScoped<EventosActividadesService>();
 builder.Services.AddScoped<TurismoCulturalService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ReservaService>();
 
 await builder.Build().RunAsync();

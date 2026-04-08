@@ -112,9 +112,9 @@
     private int habitaciones = 1;
     private string errorMsg = "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        hoteles = HotelService.GetHoteles();
+        hoteles = await HotelService.GetHoteles();
     }
 
     private void Buscar()

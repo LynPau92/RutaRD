@@ -1,7 +1,11 @@
 ﻿@page "/Hoteles"
 @using Frontend.Models
 @using Frontend.Shared
-@inject Frontend.Services.HotelService HotelService
+@using Frontend.Services
+@inject HotelService HotelService
+@inject AuthService AuthService
+@inject ReservaService ReservaService
+@inject NavigationManager Navigation
 
 <PageTitle>Hoteles - Puerto Plata</PageTitle>
 
@@ -75,10 +79,15 @@
     <div class="hoteles-grid">
         @foreach (var hotel in HotelesFiltrados)
         {
-            <div class="hotel-card">
+            var tieneReservaActiva = TieneReservaActivaEnHotel(hotel.Id);
+            <div class="hotel-card @(tieneReservaActiva ? "con-reserva-activa" : "")">
                 <div class="hotel-img-container">
                     <img src="@hotel.Imagen" alt="@hotel.Nombre" class="hotel-img" />
                     <span class="tipo-badge">@hotel.Tipo</span>
+                    @if (tieneReservaActiva)
+                    {
+                        <div class="reserva-activa-badge-hotel">🏠 Tienes una reserva activa</div>
+                    }
                 </div>
                 <div class="hotel-info">
                     <h3 class="hotel-nombre">@hotel.Nombre</h3>
@@ -98,7 +107,7 @@
                     </div>
                     <p class="hotel-precio">RD$ @hotel.PrecioNoche.ToString("N2") por noche</p>
                     <div class="hotel-actions">
-                        <a href="Hoteles/@hotel.Id" class="btn-detalle">Ver más</a>
+                        <button class="btn-detalle" @onclick="() => VerDetallesHotel(hotel.Id)">Ver más</button>
                     </div>
                 </div>
             </div>
@@ -108,6 +117,8 @@
 
 @code {
     private List<Hotel> hoteles = new();
+    private List<Reserva> reservasActivas = new();
+    private Usuario? usuario;
     private int estrellasActivo = 0;
     private string tipoActivo = "";
     private string servicioActivo = "";
@@ -120,8 +131,56 @@
         .Where(h => string.IsNullOrEmpty(servicioActivo) || h.Servicios.Contains(servicioActivo))
         .Where(h => h.PrecioNoche >= precioMin && h.PrecioNoche <= precioMax);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        hoteles = HotelService.GetHoteles();
+        usuario = AuthService.UsuarioActual;
+        hoteles = await HotelService.GetHoteles();
+
+        if (usuario != null)
+        {
+            await CargarReservasActivas();
+        }
+    }
+
+    private async Task CargarReservasActivas()
+    {
+        if (usuario == null) return;
+
+        var (reservas, error) = await ReservaService.GetReservasPorUsuarioAsync(usuario.Id);
+        if (error == null && reservas != null)
+        {
+            reservasActivas = reservas
+                .Where(r => r.Estado != "Cancelada" && r.FechaSalida >= DateTime.Today)
+                .ToList();
+        }
+    }
+
+    private bool TieneReservaActivaEnHotel(int hotelId)
+    {
+        return reservasActivas.Any(r => r.HotelId == hotelId);
+    }
+
+    private void VerDetallesHotel(int hotelId)
+    {
+        // Verificar si ya tiene una reserva activa en este hotel
+        if (TieneReservaActivaEnHotel(hotelId))
+        {
+            var reservaExistente = reservasActivas.FirstOrDefault(r => r.HotelId == hotelId);
+            if (reservaExistente != null)
+            {
+                // Mostrar advertencia pero permitir continuar
+                string mensaje = $"Ya tienes una reserva activa en este hotel:\n\n" +
+                                $"• Check-in: {reservaExistente.FechaEntrada:dd/MM/yyyy}\n" +
+                                $"• Check-out: {reservaExistente.FechaSalida:dd/MM/yyyy}\n" +
+                                $"• Estado: {reservaExistente.Estado}\n\n" +
+                                "Puedes continuar si esta reserva es para un tercero o para otras fechas.";
+
+                // Permitir continuar después de la advertencia
+                Navigation.NavigateTo($"/Hoteles/{hotelId}");
+                return;
+            }
+        }
+
+        Navigation.NavigateTo($"/Hoteles/{hotelId}");
     }
 }

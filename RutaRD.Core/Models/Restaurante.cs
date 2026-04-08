@@ -40,7 +40,7 @@ namespace RutaRD.Core.Models
 
         public bool OpcionVegana { get; set; } = false;
 
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
         // Propiedades de navegación
         public virtual ICollection<Resena> Resenas { get; set; } = new List<Resena>();
